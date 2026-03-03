@@ -69,7 +69,7 @@
 
 ###
 
-<h6 align="left">currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who come across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal (i haven't created my dev mail yet, apologies) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few projects might be my own programming language, operating system, database but for a very niched community.</h6>
+<h6 align="left">currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few projects might be my own programming language, operating system, database but for a very niched community.</h6>
 
 ###
 

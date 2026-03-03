@@ -74,7 +74,7 @@
 ###
 
 <div>
-  <img style="100%" src="https://capsule-render.vercel.app/api?type=waving&height=30&section=header&reversal=false&text=Contribution's%20Stats%20and%20Graph&fontSize=30&fontColor=F54927&fontAlign=60&fontAlignY=60&stroke=00000&strokeWidth=1&descSize=20&descAlign=50&descAlignY=50&textBg=false&theme=merko"  />
+  <img style="100%" src="https://capsule-render.vercel.app/api?type=waving&height=30&section=header&reversal=false&text=GitHub%20Activity&fontSize=30&fontColor=F54927&fontAlign=50&fontAlignY=50&stroke=00000&strokeWidth=1&descSize=20&descAlign=50&descAlignY=50&textBg=false&theme=merko"  />
 </div>
 
 ###

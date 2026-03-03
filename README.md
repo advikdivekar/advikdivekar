@@ -9,6 +9,27 @@
 ###
 
 <div align="center">
+  <a href="https://www.linkedin.com/in/advikdivekar/" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="linkedin logo"  />
+  </a>
+  <a href="https://x.com/advikk_4" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=Twitter&logo=twitter&label=&color=1DA1F2&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="twitter logo"  />
+  </a>
+  <a href="https://discord.com/adweakkk" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=Discord&logo=discord&label=&color=7289DA&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="discord logo"  />
+  </a>
+  <a href="advikdivekar@gmail.com" target="_blank">
+    <img src="https://img.shields.io/static/v1?message=Gmail&logo=gmail&label=&color=D14836&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="gmail logo"  />
+  </a>
+</div>
+
+###
+
+<h5 align="left">currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few projects might be my own programming language, operating system, database but for a very niched community.</h5>
+
+###
+
+<div align="center">
   <img src="https://skillicons.dev/icons?i=nextjs" height="60" alt="nextjs logo"  />
   <img width="12" />
   <img src="https://skillicons.dev/icons?i=go" height="60" alt="go logo"  />
@@ -53,42 +74,8 @@
 ###
 
 <div align="center">
-  <a href="https://www.linkedin.com/in/advikdivekar/" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="linkedin logo"  />
-  </a>
-  <a href="https://x.com/advikk_4" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Twitter&logo=twitter&label=&color=1DA1F2&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="twitter logo"  />
-  </a>
-  <a href="https://discord.com/adweakkk" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Discord&logo=discord&label=&color=7289DA&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="discord logo"  />
-  </a>
-  <a href="advikdivekar@gmail.com" target="_blank">
-    <img src="https://img.shields.io/static/v1?message=Gmail&logo=gmail&label=&color=D14836&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="gmail logo"  />
-  </a>
-</div>
-
-###
-
-<h6 align="left">currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few projects might be my own programming language, operating system, database but for a very niched community.</h6>
-
-###
-
-<div align="center">
-  <img src="https://count.getloli.com/@:advikdivekar?theme=ai-1&padding=6&offset=1&scale=1&align=top&pixelated=1&darkmode=0"  />
-</div>
-
-###
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/advikdivekar/advikdivekar/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/advikdivekar/advikdivekar/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/advikdivekar/advikdivekar/output/pacman-contribution-graph.svg">
-</picture>
-
-###
-
-<div>
-  <img style="100%" src="https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&reversal=false&fontSize=70&fontColor=FFFFFF&fontAlign=50&fontAlignY=50&stroke=-&animation=scaleIn&descSize=20&descAlign=50&descAlignY=50&textBg=false&theme=gruvbox_light"  />
+  <img src="https://streak-stats.demolab.com?user=advikdivekar&locale=en&mode=daily&theme=dracula&hide_border=false&border_radius=5&order=3" height="150" alt="streak graph"  />
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=advikdivekar&radius=16&theme=react&area=true&order=5" height="300" alt="activity-graph graph"  />
 </div>
 
 ###

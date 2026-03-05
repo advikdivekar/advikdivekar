@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 
 	_ "github.com/lib/pq"
 )
 
+// Wraps text so it never breaks out of the bubble
 func wrapText(text string, maxChars int) []string {
 	words := strings.Fields(text)
 	var lines []string
@@ -88,20 +88,19 @@ func fetchGenerativeIdea(clickCount int) string {
 		"Write a Razorpay script that bills you one rupee every time you use console log.",
 		"Make a Go CLI that plays sad trombone sounds when your build inevitably fails.",
 	}
-
-	ideaIndex := clickCount % len(ideas)
-	return ideas[ideaIndex]
+	return ideas[clickCount%len(ideas)]
 }
 
 type BotState struct {
 	Cookies int `json:"cookies"`
 }
 
+// Bulletproof cookie file reader for Vercel
 func getCookieCount() int {
-	cwd, _ := os.Getwd()
-	path := filepath.Join(cwd, "bot_state.json")
-	data, err := os.ReadFile(path)
-
+	data, err := os.ReadFile("bot_state.json")
+	if err != nil {
+		data, err = os.ReadFile("../bot_state.json")
+	}
 	var state BotState
 	if err == nil {
 		json.Unmarshal(data, &state)
@@ -123,98 +122,105 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	totalCookies := getCookieCount()
-
 	idea := fetchGenerativeIdea(totalClicks)
-	// Reduced max chars from 60 to 45 so text fits in the new right-aligned bubble
 	lines := wrapText(idea, 45)
 
-	textSVG := ""
-	yOffset := 65
-	if len(lines) == 1 {
-		yOffset = 80
+	// Dynamic centering math so text is always perfectly in the middle of the box
+	startY := 105
+	if len(lines) == 2 {
+		startY = 92
+	} else if len(lines) == 3 {
+		startY = 80
+	} else if len(lines) == 4 {
+		startY = 68
 	}
 
+	textSVG := ""
 	for _, line := range lines {
-		// Moved text start X coordinate to 400
-		textSVG += fmt.Sprintf(`<tspan x="400" y="%d">%s</tspan>`, yOffset, line)
-		yOffset += 22
+		textSVG += fmt.Sprintf(`<tspan x="605" y="%d" text-anchor="middle">%s</tspan>`, startY, line)
+		startY += 26
 	}
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
 	svg := fmt.Sprintf(`
-	<svg width="850" height="220" viewBox="0 0 850 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg width="850" height="240" viewBox="0 0 850 240" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<defs>
 			<linearGradient id="armorGradient" x1="0%%" y1="0%%" x2="0%%" y2="100%%">
-				<stop offset="0%%" stop-color="#E4405F" />
-				<stop offset="100%%" stop-color="#A82A43" />
+				<stop offset="0%%" stop-color="#ff4b6e" />
+				<stop offset="100%%" stop-color="#a81533" />
 			</linearGradient>
 			<filter id="glow">
-				<feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+				<feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
 				<feMerge>
 					<feMergeNode in="coloredBlur"/>
 					<feMergeNode in="SourceGraphic"/>
 				</feMerge>
 			</filter>
+			<filter id="shadow" x="-10%%" y="-10%%" width="120%%" height="120%%">
+				<feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#8b5cf6" flood-opacity="0.3"/>
+			</filter>
 		</defs>
 		<style>
-			.text-main { font: 600 16px 'Segoe UI', Ubuntu, sans-serif; fill: #ffffff; }
+			.text-main { font: 600 17px 'Segoe UI', Ubuntu, sans-serif; fill: #ffffff; }
 			.text-sub { font: 500 14px 'Segoe UI', Ubuntu, sans-serif; fill: #a0a0a0; }
-			.bubble { fill: #1a1b26; stroke: #8080ff; stroke-width: 2.5px; filter: drop-shadow(0px 0px 3px #8080ff); }
-			.text-intro { font: italic 600 13px 'Segoe UI', Ubuntu, sans-serif; fill: #8080ff; }
+			.text-intro { font: italic 600 13px 'Segoe UI', Ubuntu, sans-serif; fill: #a78bfa; }
 			
 			@keyframes wave {
 				0%% { transform: rotate(0deg); }
-				25%% { transform: rotate(30deg); }
+				25%% { transform: rotate(40deg); }
 				50%% { transform: rotate(0deg); }
-				75%% { transform: rotate(30deg); }
+				75%% { transform: rotate(40deg); }
 				100%% { transform: rotate(0deg); }
 			}
 			.arm-wave {
-				transform-origin: 155px 105px;
-				animation: wave 3s infinite ease-in-out;
+				transform-origin: 160px 105px;
+				animation: wave 2.5s infinite ease-in-out;
 			}
 		</style>
 		
-		<circle cx="150" cy="70" r="4" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
-		<circle cx="170" cy="55" r="7" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
+		<circle cx="150" cy="55" r="4" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
+		<circle cx="165" cy="40" r="7" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
+		
+		<rect x="185" y="10" width="160" height="60" rx="30" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)"/>
+		<text x="265" y="34" class="text-intro" text-anchor="middle">Hi, I'm Melt-Chan!</text>
+		<text x="265" y="54" class="text-intro" text-anchor="middle">Advik's Idea Generator</text>
 
-		<path d="M 190,50 A 25,25 0 0,1 215,20 A 35,35 0 0,1 275,10 A 35,35 0 0,1 335,20 A 25,25 0 0,1 360,50 A 25,25 0 0,1 335,80 L 215,80 A 25,25 0 0,1 190,50 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" />
-		<text x="210" y="45" class="text-intro">Hi, I'm Melt-Chan!</text>
-		<text x="200" y="65" class="text-intro">Advik's Idea Generator</text>
+		<ellipse cx="60" cy="135" rx="22" ry="45" fill="url(#armorGradient)" transform="rotate(25 60 135)" />
+		<circle cx="68" cy="105" r="7" fill="#8b5cf6" opacity="0.8" filter="url(#glow)"/> 
 
-		<ellipse cx="65" cy="115" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(35 65 115)" stroke="#121011" stroke-width="0.5"/>
-		<circle cx="73" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
-		<rect x="55" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(35 65 115)" /> 
-
-		<path d="M 85 95 C 60 140, 50 210, 115 210 C 180 210, 170 140, 145 95 Z" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5" />
-		<path d="M 90 100 C 70 140, 62 200, 115 200 C 168 200, 160 140, 140 100 Z" fill="#D14836" stroke="#121011" stroke-width="0.5" opacity="0.6"/>
-		<ellipse cx="115" cy="130" rx="22" ry="18" fill="#121011" opacity="0.4"/> 
-		<circle cx="115" cy="130" r="10" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
+		<path d="M 70 100 C 40 160, 45 230, 110 230 C 175 230, 180 160, 150 100 Z" fill="url(#armorGradient)" />
+		<path d="M 75 110 C 55 160, 60 220, 110 220 C 160 220, 165 160, 145 110 Z" fill="#7a0f25" opacity="0.4"/>
+		
+		<circle cx="110" cy="140" r="16" fill="#121011" opacity="0.6"/>
+		<circle cx="110" cy="140" r="9" fill="#8b5cf6" filter="url(#glow)"/> 
 
 		<g class="arm-wave">
-			<ellipse cx="165" cy="115" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(-35 165 115)" stroke="#121011" stroke-width="0.5"/>
-			<circle cx="157" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
-			<rect x="155" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(-35 165 115)" /> 
+			<ellipse cx="160" cy="135" rx="22" ry="45" fill="url(#armorGradient)" />
+			<rect x="150" y="145" width="20" height="25" fill="#121011" rx="4" opacity="0.5" /> 
 		</g>
 
-		<ellipse cx="115" cy="70" rx="42" ry="30" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5"/>
-		<ellipse cx="115" cy="73" rx="34" ry="24" fill="#D14836" stroke="#121011" stroke-width="0.5" />
-		<ellipse cx="78" cy="70" rx="8" ry="12" fill="#E4405F" transform="rotate(-10 78 70)"/>
-		<ellipse cx="152" cy="70" rx="8" ry="12" fill="#E4405F" transform="rotate(10 152 70)"/>
+		<ellipse cx="110" cy="75" rx="45" ry="32" fill="url(#armorGradient)" />
+		<ellipse cx="110" cy="78" rx="36" ry="24" fill="#D14836" />
+		<ellipse cx="70" cy="78" rx="6" ry="12" fill="#E4405F" transform="rotate(-10 70 78)"/>
+		<ellipse cx="150" cy="78" rx="6" ry="12" fill="#E4405F" transform="rotate(10 150 78)"/>
 		
-		<circle cx="97" cy="73" r="5.5" fill="#121011" /> 
-		<circle cx="133" cy="73" r="5.5" fill="#121011" /> 
-		<line x1="97" y1="73" x2="133" y2="73" stroke="#121011" stroke-width="3.5" /> 
+		<circle cx="92" cy="78" r="6" fill="#121011" /> 
+		<circle cx="128" cy="78" r="6" fill="#121011" /> 
+		<line x1="92" y1="78" x2="128" y2="78" stroke="#121011" stroke-width="4" /> 
 		
-		<rect x="380" y="30" width="450" height="110" class="bubble" />
-		<path d="M 380 80 L 355 95 L 380 110 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" stroke-linejoin="round" />
-		<path d="M 381 82 L 358 95 L 381 108 Z" fill="#1a1b26" /> 
+		<circle cx="75" cy="86" r="5" fill="#ff708d" opacity="0.8"/>
+		<circle cx="145" cy="86" r="5" fill="#ff708d" opacity="0.8"/>
+
+		<rect x="375" y="15" width="460" height="170" rx="16" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)" />
+		
+		<path d="M 375 75 L 350 85 L 375 95 Z" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" stroke-linejoin="round"/>
+		<path d="M 377 77 L 354 85 L 377 93 Z" fill="#1a1b26" /> 
 		
 		<text class="text-main">%s</text>
 		
-		<text x="400" y="175" class="text-sub">✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click me!</text>
+		<text x="605" y="220" class="text-sub" text-anchor="middle">✨ Ideas generated: %d   |   🍪 Cookies eaten: %d   |   👆 Click me!</text>
 	</svg>`, textSVG, totalClicks, totalCookies)
 
 	fmt.Fprint(w, svg)

@@ -121,159 +121,183 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	totalCookies := getCookieCount()
 	idea := fetchGenerativeIdea(totalClicks)
-	lines := wrapText(idea, 36)
+	lines := wrapText(idea, 34)
 
-	// Vertically center text in the bubble (bubble center Y ~115, height 130)
-	lineHeight := 24
+	// Bubble: y=52..200, centre=126
+	lineHeight := 23
 	totalTextHeight := len(lines) * lineHeight
-	startY := 115 - totalTextHeight/2 + lineHeight/2
+	startY := 126 - totalTextHeight/2 + lineHeight/2
 
 	textSVG := ""
 	for _, line := range lines {
-		textSVG += fmt.Sprintf(`<tspan x="570" dy="0" y="%d" text-anchor="middle">%s</tspan>`, startY, line)
+		textSVG += fmt.Sprintf(`<tspan x="535" y="%d" text-anchor="middle">%s</tspan>`, startY, line)
 		startY += lineHeight
 	}
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
-	// ─────────────────────────────────────────────────────────────────────────
-	// SVG: 860 × 230  (wider to give the bubble more room)
-	// Melt (red Baymax) occupies x=10..185, centred at x=100
-	// Speech bubble: x=210..860, centred at x=535
-	// ─────────────────────────────────────────────────────────────────────────
-	svg := fmt.Sprintf(`<svg width="860" height="230" viewBox="0 0 860 230" fill="none"
-	xmlns="http://www.w3.org/2000/svg">
+	svg := fmt.Sprintf(`<svg width="860" height="300" viewBox="0 0 860 300" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <!-- Red gradient for Melt's body -->
-  <linearGradient id="bodyGrad" x1="0%%" y1="0%%" x2="30%%" y2="100%%">
-    <stop offset="0%%"   stop-color="#ff6b6b"/>
-    <stop offset="100%%" stop-color="#b91c3c"/>
+  <radialGradient id="bodyRad" cx="35%%" cy="30%%" r="65%%">
+    <stop offset="0%%"   stop-color="#ff8080"/>
+    <stop offset="55%%"  stop-color="#e02040"/>
+    <stop offset="100%%" stop-color="#8b0f22"/>
+  </radialGradient>
+  <radialGradient id="headRad" cx="38%%" cy="28%%" r="60%%">
+    <stop offset="0%%"   stop-color="#ff9090"/>
+    <stop offset="50%%"  stop-color="#e02040"/>
+    <stop offset="100%%" stop-color="#8b0f22"/>
+  </radialGradient>
+  <radialGradient id="limbRad" cx="30%%" cy="25%%" r="65%%">
+    <stop offset="0%%"   stop-color="#ff7070"/>
+    <stop offset="60%%"  stop-color="#cc1a35"/>
+    <stop offset="100%%" stop-color="#7a0b1c"/>
+  </radialGradient>
+  <radialGradient id="faceRad" cx="40%%" cy="35%%" r="60%%">
+    <stop offset="0%%"   stop-color="#d43050"/>
+    <stop offset="100%%" stop-color="#7a0b1c"/>
+  </radialGradient>
+  <linearGradient id="borderGrad" x1="0%%" y1="0%%" x2="100%%" y2="0%%">
+    <stop offset="0%%"   stop-color="#4c1d95" stop-opacity="0"/>
+    <stop offset="20%%"  stop-color="#7c3aed"/>
+    <stop offset="50%%"  stop-color="#a855f7"/>
+    <stop offset="80%%"  stop-color="#7c3aed"/>
+    <stop offset="100%%" stop-color="#4c1d95" stop-opacity="0"/>
   </linearGradient>
-  <!-- Slightly lighter red for chest / limbs shading -->
-  <linearGradient id="limbGrad" x1="0%%" y1="0%%" x2="0%%" y2="100%%">
-    <stop offset="0%%"   stop-color="#e83a5a"/>
-    <stop offset="100%%" stop-color="#991030"/>
-  </linearGradient>
-  <!-- Inner face plate -->
-  <linearGradient id="faceGrad" x1="0%%" y1="0%%" x2="0%%" y2="100%%">
-    <stop offset="0%%"   stop-color="#c0283e"/>
-    <stop offset="100%%" stop-color="#8b1228"/>
-  </linearGradient>
-  <!-- Glow -->
-  <filter id="glow" x="-20%%" y="-20%%" width="140%%" height="140%%">
-    <feGaussianBlur stdDeviation="3" result="blur"/>
+  <radialGradient id="shineHead" cx="38%%" cy="22%%" r="40%%">
+    <stop offset="0%%"   stop-color="#ffffff" stop-opacity="0.22"/>
+    <stop offset="100%%" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="shineBody" cx="32%%" cy="20%%" r="45%%">
+    <stop offset="0%%"   stop-color="#ffffff" stop-opacity="0.18"/>
+    <stop offset="100%%" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="shineArm" cx="28%%" cy="22%%" r="50%%">
+    <stop offset="0%%"   stop-color="#ffffff" stop-opacity="0.2"/>
+    <stop offset="100%%" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="coreGlow" x="-40%%" y="-40%%" width="180%%" height="180%%">
+    <feGaussianBlur stdDeviation="4" result="blur"/>
     <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
-  <!-- Soft shadow for the whole card -->
-  <filter id="cardShadow" x="-5%%" y="-5%%" width="110%%" height="120%%">
-    <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#7c3aed" flood-opacity="0.25"/>
+  <filter id="cardShadow">
+    <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#6d28d9" flood-opacity="0.3"/>
   </filter>
-  <!-- Bubble shadow -->
-  <filter id="bubbleShadow" x="-5%%" y="-10%%" width="110%%" height="130%%">
-    <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#7c3aed" flood-opacity="0.35"/>
+  <filter id="bubbleShadow">
+    <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#6d28d9" flood-opacity="0.4"/>
+  </filter>
+  <filter id="btnGlow">
+    <feDropShadow dx="0" dy="2" stdDeviation="7" flood-color="#a855f7" flood-opacity="0.55"/>
   </filter>
 </defs>
 
 <style>
-  .card-bg   { font-family: 'Segoe UI', Ubuntu, sans-serif; }
-  .idea-text { font: 600 15px 'Segoe UI', Ubuntu, sans-serif; fill: #f0e6ff; }
-  .sub-text  { font: 500 12px 'Segoe UI', Ubuntu, sans-serif; fill: #9d84c7; }
-  .tag-text  { font: italic 600 11.5px 'Segoe UI', Ubuntu, sans-serif; fill: #c4b5fd; }
+  .idea-text { font: 600 14.5px 'Segoe UI', Ubuntu, sans-serif; fill: #ede9fe; }
+  .sub-text  { font: 500 11px   'Segoe UI', Ubuntu, sans-serif; fill: #9d84c7; }
+  .tag-text  { font: italic 600 10.5px 'Segoe UI', Ubuntu, sans-serif; fill: #c4b5fd; }
+  .btn-text  { font: 700 10.5px 'Segoe UI', Ubuntu, sans-serif; fill: #ede9fe; letter-spacing: 0.09em; }
+  .lbl-text  { font: 700 9px   'Segoe UI', Ubuntu, sans-serif; fill: #6d28d9; letter-spacing: 0.18em; }
 </style>
 
-<!-- ░░ BACKGROUND CARD ░░ -->
-<rect x="4" y="4" width="852" height="222" rx="20"
-      fill="#0f0e17" stroke="#3b1f6e" stroke-width="1.6" filter="url(#cardShadow)"/>
+<!-- TOP BORDER -->
+<rect x="0" y="0" width="860" height="6" fill="url(#borderGrad)"/>
 
-<!-- subtle purple shimmer strip at top -->
-<rect x="4" y="4" width="852" height="4" rx="2" fill="#7c3aed" opacity="0.6"/>
+<!-- CARD -->
+<rect x="0" y="6" width="860" height="288" fill="#0d0c18" filter="url(#cardShadow)"/>
+<rect x="0"   y="6" width="3" height="288" fill="#6d28d9" opacity="0.4"/>
+<rect x="857" y="6" width="3" height="288" fill="#6d28d9" opacity="0.4"/>
+<text x="14" y="23" class="lbl-text">✦ MELT · IDEA BOT</text>
+<line x1="215" y1="16" x2="215" y2="284" stroke="#3b1f6e" stroke-width="1" stroke-dasharray="4 4" opacity="0.45"/>
 
-<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-     RED BAYMAX  —  "MELT"
-     Body centre: (108, 148)  Head centre: (108, 72)
-     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<!-- ── LEFT THIGH / LEG ── -->
+<ellipse cx="72" cy="258" rx="38" ry="26" fill="url(#limbRad)"/>
+<ellipse cx="72" cy="258" rx="38" ry="26" fill="url(#shineArm)"/>
+<ellipse cx="52" cy="278" rx="28" ry="16" fill="url(#limbRad)"/>
+<ellipse cx="52" cy="278" rx="28" ry="16" fill="url(#shineArm)"/>
 
-<!-- LEFT ARM -->
-<ellipse cx="62" cy="148" rx="18" ry="38"
-         fill="url(#limbGrad)" transform="rotate(-18 62 148)"/>
-<!-- shading crease -->
-<ellipse cx="62" cy="148" rx="8" ry="22"
-         fill="#7a0f25" opacity="0.35" transform="rotate(-18 62 148)"/>
+<!-- ── RIGHT THIGH / LEG ── -->
+<ellipse cx="148" cy="258" rx="38" ry="26" fill="url(#limbRad)"/>
+<ellipse cx="148" cy="258" rx="38" ry="26" fill="url(#shineArm)"/>
+<ellipse cx="164" cy="278" rx="28" ry="16" fill="url(#limbRad)"/>
+<ellipse cx="164" cy="278" rx="28" ry="16" fill="url(#shineArm)"/>
 
-<!-- RIGHT ARM -->
-<ellipse cx="154" cy="148" rx="18" ry="38"
-         fill="url(#limbGrad)" transform="rotate(18 154 148)"/>
-<ellipse cx="154" cy="148" rx="8" ry="22"
-         fill="#7a0f25" opacity="0.35" transform="rotate(18 154 148)"/>
+<!-- ── BODY ── -->
+<ellipse cx="108" cy="200" rx="62" ry="68" fill="url(#bodyRad)"/>
+<ellipse cx="108" cy="200" rx="62" ry="68" fill="url(#shineBody)"/>
 
-<!-- BODY (large rounded rect / pill) -->
-<rect x="58" y="110" width="100" height="108" rx="50"
-      fill="url(#bodyGrad)"/>
-<!-- body shading overlay -->
-<rect x="68" y="118" width="80" height="92" rx="40"
-      fill="#7a0f25" opacity="0.18"/>
+<!-- ── LEFT ARM ── -->
+<ellipse cx="60" cy="195" rx="26" ry="36" fill="url(#limbRad)" transform="rotate(-30 60 195)"/>
+<ellipse cx="60" cy="195" rx="26" ry="36" fill="url(#shineArm)" transform="rotate(-30 60 195)"/>
+<ellipse cx="88" cy="222" rx="28" ry="20" fill="url(#limbRad)" transform="rotate(-15 88 222)"/>
+<ellipse cx="88" cy="222" rx="28" ry="20" fill="url(#shineArm)" transform="rotate(-15 88 222)"/>
 
-<!-- CHEST CIRCLE -->
-<circle cx="108" cy="158" r="18" fill="#12101a"/>
-<circle cx="108" cy="158" r="11" fill="#8b5cf6" filter="url(#glow)"/>
-<circle cx="108" cy="158" r="5"  fill="#c4b5fd"/>
+<!-- ── RIGHT ARM ── -->
+<ellipse cx="156" cy="195" rx="26" ry="36" fill="url(#limbRad)" transform="rotate(30 156 195)"/>
+<ellipse cx="156" cy="195" rx="26" ry="36" fill="url(#shineArm)" transform="rotate(30 156 195)"/>
+<ellipse cx="122" cy="218" rx="30" ry="21" fill="url(#limbRad)" transform="rotate(10 122 218)"/>
+<ellipse cx="122" cy="218" rx="30" ry="21" fill="url(#shineArm)" transform="rotate(10 122 218)"/>
 
-<!-- LEFT LEG -->
-<rect x="74"  y="208" width="24" height="16" rx="10" fill="url(#limbGrad)"/>
-<!-- RIGHT LEG -->
-<rect x="118" y="208" width="24" height="16" rx="10" fill="url(#limbGrad)"/>
+<!-- ── HANDS CLASPED ── -->
+<ellipse cx="105" cy="232" rx="18" ry="14" fill="url(#limbRad)"/>
+<ellipse cx="105" cy="232" rx="18" ry="14" fill="url(#shineArm)"/>
 
-<!-- HEAD (big rounded circle – Baymax proportions) -->
-<ellipse cx="108" cy="72" rx="52" ry="46" fill="url(#bodyGrad)"/>
-<!-- head shading -->
-<ellipse cx="108" cy="72" rx="42" ry="36" fill="#c0283e" opacity="0.25"/>
+<!-- ── CHEST CORE ── -->
+<circle cx="108" cy="196" r="13"  fill="#12101a"/>
+<circle cx="108" cy="196" r="8.5" fill="#8b5cf6" filter="url(#coreGlow)"/>
+<circle cx="108" cy="196" r="3.5" fill="#c4b5fd"/>
 
-<!-- FACE PLATE -->
-<ellipse cx="108" cy="76" rx="38" ry="28" fill="url(#faceGrad)"/>
+<!-- ── NECK ── -->
+<ellipse cx="108" cy="145" rx="22" ry="14" fill="url(#bodyRad)"/>
 
-<!-- EYES -->
-<circle cx="94"  cy="72" r="7" fill="#12101a"/>
-<circle cx="122" cy="72" r="7" fill="#12101a"/>
-<!-- eye shine -->
-<circle cx="96"  cy="70" r="2.5" fill="white" opacity="0.7"/>
-<circle cx="124" cy="70" r="2.5" fill="white" opacity="0.7"/>
+<!-- ── HEAD ── -->
+<ellipse cx="108" cy="96" rx="58" ry="54" fill="url(#headRad)"/>
+<ellipse cx="108" cy="96" rx="58" ry="54" fill="url(#shineHead)"/>
+<path d="M 86 138 Q 108 148 130 138" stroke="#8b0f22" stroke-width="2.5" fill="none" opacity="0.6"/>
 
-<!-- MOUTH LINE -->
-<path d="M 94 83 Q 108 90 122 83" stroke="#12101a" stroke-width="3.5"
-      stroke-linecap="round" fill="none"/>
+<!-- ── FACE PLATE ── -->
+<ellipse cx="108" cy="100" rx="40" ry="32" fill="url(#faceRad)"/>
+<ellipse cx="108" cy="104" rx="36" ry="27" fill="#6a0918" opacity="0.3"/>
 
-<!-- CHEEK BLUSH -->
-<ellipse cx="82"  cy="85" rx="7" ry="4" fill="#ff8fa3" opacity="0.55"/>
-<ellipse cx="134" cy="85" rx="7" ry="4" fill="#ff8fa3" opacity="0.55"/>
+<!-- ── EYES ── -->
+<ellipse cx="93"  cy="96" rx="9"   ry="10" fill="#1a1020"/>
+<ellipse cx="123" cy="96" rx="9"   ry="10" fill="#1a1020"/>
+<ellipse cx="90"  cy="92" rx="3.5" ry="3"  fill="white" opacity="0.65"/>
+<ellipse cx="120" cy="92" rx="3.5" ry="3"  fill="white" opacity="0.65"/>
 
-<!-- "Hello! I'm Melt" speech bubble (small, top-left of head) -->
-<rect x="50" y="8" width="164" height="42" rx="18"
-      fill="#1a1330" stroke="#6d28d9" stroke-width="1.8"/>
-<!-- bubble tail -->
-<path d="M 106 50 L 98 58 L 116 50 Z" fill="#1a1330" stroke="#6d28d9"
-      stroke-width="1.8" stroke-linejoin="round"/>
-<path d="M 107 51 L 99 57 L 115 51 Z" fill="#1a1330"/>
+<!-- ── CHEEKS ── -->
+<ellipse cx="76"  cy="112" rx="8" ry="4.5" fill="#ff8fa3" opacity="0.5"/>
+<ellipse cx="140" cy="112" rx="8" ry="4.5" fill="#ff8fa3" opacity="0.5"/>
 
-<text x="132" y="27" class="tag-text" text-anchor="middle">Hello! I'm Melt</text>
-<text x="132" y="43" class="tag-text" text-anchor="middle">Built by Advik-chan ✨</text>
+<!-- ── NAME BUBBLE ── -->
+<rect x="22" y="8" width="152" height="38" rx="14" fill="#150f28" stroke="#6d28d9" stroke-width="1.5"/>
+<path d="M 90 46 L 83 56 L 102 46 Z" fill="#150f28" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M 91 47 L 85 55 L 100 47 Z" fill="#150f28"/>
+<text x="98" y="27" class="tag-text" text-anchor="middle">Hello! I'm Melt 👋</text>
+<text x="98" y="42" class="tag-text" text-anchor="middle">Built by Advik-chan ✨</text>
 
-<!-- ░░ IDEA SPEECH BUBBLE ░░ -->
-<rect x="212" y="30" width="630" height="148" rx="18"
-      fill="#160f2a" stroke="#6d28d9" stroke-width="2" filter="url(#bubbleShadow)"/>
-<!-- Pointer arrow pointing left toward Melt -->
-<path d="M 212 115 L 190 105 L 212 95 Z"
-      fill="#160f2a" stroke="#6d28d9" stroke-width="2" stroke-linejoin="round"/>
-<!-- fill the arrow seam -->
-<path d="M 214 97 L 193 105 L 214 113 Z" fill="#160f2a"/>
+<!-- ── IDEA BUBBLE ── -->
+<rect x="222" y="52" width="626" height="148" rx="16"
+      fill="#130d24" stroke="#6d28d9" stroke-width="1.8" filter="url(#bubbleShadow)"/>
+<path d="M 222 124 L 206 114 L 222 104 Z"
+      fill="#130d24" stroke="#6d28d9" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M 224 106 L 209 114 L 224 122 Z" fill="#130d24"/>
 
-<!-- Idea text (dynamically wrapped) -->
 <text class="idea-text">%s</text>
 
-<!-- Stats bar -->
-<text x="527" y="196" class="sub-text" text-anchor="middle">
-  ✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click me!
+<!-- STATS -->
+<text x="390" y="222" class="sub-text" text-anchor="middle">
+  ✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click the widget!
 </text>
+
+<!-- COOKIE BUTTON -->
+<rect x="572" y="234" width="260" height="34" rx="10"
+      fill="#1a1035" stroke="#7c3aed" stroke-width="1.5" filter="url(#btnGlow)"/>
+<rect x="573" y="235" width="258" height="14" rx="9" fill="#ffffff" opacity="0.03"/>
+<text x="702" y="256" class="btn-text" text-anchor="middle">🍪  FEED MELT-CHAN A COOKIE</text>
+
+<!-- BOTTOM BORDER -->
+<rect x="0" y="294" width="860" height="6" fill="url(#borderGrad)"/>
 </svg>`, textSVG, totalClicks, totalCookies)
 
 	fmt.Fprint(w, svg)

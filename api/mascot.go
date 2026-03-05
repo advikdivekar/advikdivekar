@@ -95,7 +95,6 @@ type BotState struct {
 	Cookies int `json:"cookies"`
 }
 
-// Bulletproof cookie file reader for Vercel
 func getCookieCount() int {
 	data, err := os.ReadFile("bot_state.json")
 	if err != nil {
@@ -125,7 +124,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	idea := fetchGenerativeIdea(totalClicks)
 	lines := wrapText(idea, 45)
 
-	// Dynamic centering math so text is always perfectly in the middle of the box
 	startY := 105
 	if len(lines) == 2 {
 		startY = 92
@@ -183,9 +181,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<circle cx="150" cy="55" r="4" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
 		<circle cx="165" cy="40" r="7" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
 		
-		<rect x="185" y="10" width="160" height="60" rx="30" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)"/>
-		<text x="265" y="34" class="text-intro" text-anchor="middle">Hi, I'm Melt-Chan!</text>
-		<text x="265" y="54" class="text-intro" text-anchor="middle">Advik's Idea Generator</text>
+		<rect x="195" y="15" width="140" height="50" rx="25" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)"/>
+		<text x="265" y="35" class="text-intro" text-anchor="middle">Hi, I'm Melt-Chan!</text>
+		<text x="265" y="52" class="text-intro" text-anchor="middle">Advik's AI companion.</text>
 
 		<ellipse cx="60" cy="135" rx="22" ry="45" fill="url(#armorGradient)" transform="rotate(25 60 135)" />
 		<circle cx="68" cy="105" r="7" fill="#8b5cf6" opacity="0.8" filter="url(#glow)"/> 
@@ -214,7 +212,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<circle cx="145" cy="86" r="5" fill="#ff708d" opacity="0.8"/>
 
 		<rect x="375" y="15" width="460" height="170" rx="16" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)" />
-		
 		<path d="M 375 75 L 350 85 L 375 95 Z" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" stroke-linejoin="round"/>
 		<path d="M 377 77 L 354 85 L 377 93 Z" fill="#1a1b26" /> 
 		

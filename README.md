@@ -14,7 +14,7 @@ not a fun fact - i code in search of purpose.
 
 my next few long term projects might be my own programming language, operating system, database but for a very niched community.
 
---
+---
 
 <br/>
 

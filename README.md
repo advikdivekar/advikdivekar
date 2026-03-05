@@ -1,9 +1,24 @@
-<h1>hey i'm advik</h1><br>
-currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few long term projects might be my own programming language, operating system, database but for a very niched community.
+# hey i'm advik
+
+currently working on melt
+
+learning about distributed systems, micro-services and computer networking
+
+anyone who comes across my profile help me with melt - my clay game hehe
+
+you and i can work on any project hehe
+
+mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com
+
+not a fun fact - i code in search of purpose.
+
+my next few long term projects might be my own programming language, operating system, database but for a very niched community.
+
+<br/>
 
 <div align="center">
   <a href="https://advikdivekar.vercel.app/api/click">
-    <img src="https://advikdivekar.vercel.app/api/mascot?v=8" alt="Melt-Chan Live Bot" width="100%"/>
+    <img src="https://advikdivekar.vercel.app/api/mascot?v=9" alt="Melt-Chan Live Bot" width="100%"/>
   </a>
   <br/>
   <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Feed:Cookie&body=Just+dropping+off+a+cookie+for+Melt-Chan.">

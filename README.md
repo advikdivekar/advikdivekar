@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="https://komarev.com/ghpvc/?username=advikdivekar&label=Profile%20Views&color=ff4b6e&style=flat" alt="advikdivekar profile views" />
+</p>
+
 # hey i'm advik
 
 currently working on melt

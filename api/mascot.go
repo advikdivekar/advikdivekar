@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -34,9 +36,52 @@ func wrapText(text string, maxChars int) []string {
 	return lines
 }
 
-// TODO: We will replace this with the Gemini API call next!
+// Struct to handle the JSON response from Gemini
+type GeminiResponse struct {
+	Candidates []struct {
+		Content struct {
+			Parts []struct {
+				Text string `json:"text"`
+			} `json:"parts"`
+		} `json:"content"`
+	} `json:"candidates"`
+}
+
+// The AI Brain
 func fetchGenerativeIdea() string {
-	return "Build a micro-service that randomly deletes one line of code from your repo every time you drink coffee. Call it Chaos Driven Development."
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	if apiKey == "" {
+		// Fallback if Vercel still hasn't loaded the API key
+		return "Build a micro-service that randomly deletes one line of code from your repo every time you drink coffee."
+	}
+
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
+
+	// The hidden prompt that gives Melt-Chan her personality and context
+	prompt := `You are Melt-Chan, an unhinged, slightly melted clay AI companion. Generate a very short, wild, funny, or chaotic software project idea (maximum 15 words) for Advik. He codes in Go, Python, and Flutter, builds AI bots, works on distributed systems, and uses Razorpay for his dropshipping projects. Do not use quotation marks, hashtags, or emojis. Just give the raw idea.`
+
+	reqBody := []byte(fmt.Sprintf(`{
+		"contents": [{
+			"parts": [{"text": "%s"}]
+		}]
+	}`, prompt))
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBody))
+	if err != nil || resp.StatusCode != 200 {
+		return "Write your own database from scratch just to feel something."
+	}
+	defer resp.Body.Close()
+
+	var result GeminiResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Candidates) > 0 && len(result.Candidates[0].Content.Parts) > 0 {
+		idea := result.Candidates[0].Content.Parts[0].Text
+		// Clean up the output to ensure it fits nicely
+		idea = strings.TrimSpace(idea)
+		idea = strings.ReplaceAll(idea, "\n", " ")
+		return idea
+	}
+
+	return "Create an AI that just replies 'LGTM' to every PR."
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {

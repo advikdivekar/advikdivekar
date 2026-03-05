@@ -147,21 +147,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
-	// ─────────────────────────────────────────────────────────────────────
-	// Canvas: 800 × 220
-	// Background: #0d1117 (GitHub dark exact)
-	// Left zone (Melt): x=0..186, centred x=90
-	// Right zone (bubble): x=194..790
-	// Bottom bar: y=178..210 (stats + cookie button)
-	//
-	// GitHub-SAFE SVG:
-	//   ✓ linearGradient
-	//   ✓ basic shapes
-	//   ✓ text / tspan
-	//   ✗ NO filters, feDropShadow, feGaussianBlur
-	//   ✗ NO radialGradient (stripped by GitHub)
-	//   ✗ NO <style> external fonts (use system stack)
-	// ─────────────────────────────────────────────────────────────────────
 	svg := fmt.Sprintf(`<svg width="800" height="220" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <linearGradient id="bodyGrad" x1="0.3" y1="0" x2="0.7" y2="1">
@@ -184,35 +169,15 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 </defs>
 
 <style>
-  :root {
-    --text-color: #1f2328;
-    --sub-color: #656d76;
-    --bubble-bg: #ffffff;
-    --bubble-border: #d0d7de;
-    --btn-bg: #f6f8fa;
-    --btn-border: #d0d7de;
-    --btn-text: #24292f;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --text-color: #e6edf3;
-      --sub-color: #8b949e;
-      --bubble-bg: #161b22;
-      --bubble-border: #30363d;
-      --btn-bg: #21262d;
-      --btn-border: #30363d;
-      --btn-text: #c9d1d9;
-    }
-  }
-  .idea { font: 700 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--text-color); }
-  .sub { font: 400 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--sub-color); }
-  .nametag { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--sub-color); }
-  .btn { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--btn-text); letter-spacing: 0.06em; }
+  .idea { font: 700 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #e6edf3; }
+  .sub { font: 400 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+  .nametag { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+  .btn { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #c9d1d9; letter-spacing: 0.06em; }
   
-  .bubble-bg { fill: var(--bubble-bg); stroke: var(--bubble-border); stroke-width: 1.5; }
-  .bubble-arrow { fill: var(--bubble-bg); }
-  .bubble-arrow-outline { fill: var(--bubble-bg); stroke: var(--bubble-border); stroke-width: 1.5; stroke-linejoin: round; }
-  .btn-bg { fill: var(--btn-bg); stroke: var(--btn-border); stroke-width: 1; }
+  .bubble-bg { fill: rgba(30, 33, 39, 0.85); stroke: rgba(60, 68, 77, 0.85); stroke-width: 1.5; }
+  .bubble-arrow { fill: rgba(30, 33, 39, 0.85); }
+  .bubble-arrow-outline { fill: rgba(30, 33, 39, 0.85); stroke: rgba(60, 68, 77, 0.85); stroke-width: 1.5; stroke-linejoin: round; }
+  .btn-bg { fill: rgba(40, 44, 52, 0.85); stroke: rgba(60, 68, 77, 0.85); stroke-width: 1; }
 </style>
 
 <!-- BACKGROUND -->
@@ -264,10 +229,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <text class="idea">%s</text>
 
 <!-- ═══ BOTTOM BAR ═══ -->
-<text x="200" y="198" class="sub">✨ %d ideas   🍪 %d cookies</text>
-
-<rect x="574" y="183" width="210" height="28" rx="6" class="btn-bg"/>
-<text x="679" y="201" class="btn" text-anchor="middle">🍪 Feed Melt a Cookie</text>
+<!-- Removed SVG cookie button to prevent duplicate -->
+<text x="590" y="198" class="sub" text-anchor="end">✨ %d ideas   🍪 %d cookies</text>
 
 </svg>`, textSVG, totalClicks, totalCookies)
 

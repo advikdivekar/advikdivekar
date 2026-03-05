@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
+	"path/filepath" // THIS FIXES THE ERRORS IN YOUR SCREENSHOT
 	"strings"
 
 	_ "github.com/lib/pq"
@@ -35,7 +35,6 @@ func wrapText(text string, maxChars int) []string {
 	return lines
 }
 
-// Hardcoded Brain - Zero latency, zero API limits
 func fetchGenerativeIdea(clickCount int) string {
 	ideas := []string{
 		"Build a Go microservice that randomly deletes a repo when your Razorpay payment fails.",
@@ -94,33 +93,28 @@ func fetchGenerativeIdea(clickCount int) string {
 	return ideas[ideaIndex]
 }
 
-// Struct to read your bot_state.json file
 type BotState struct {
 	Cookies int `json:"cookies"`
 }
 
 func getCookieCount() int {
-	// Attempts to read from your assets/bot_state.json file
-	path := filepath.Join("..", "assets", "bot_state.json")
+	// Look for bot_state.json in the project root
+	cwd, _ := os.Getwd()
+	path := filepath.Join(cwd, "bot_state.json")
 	data, err := os.ReadFile(path)
-	if err != nil {
-		// Fallback just in case Vercel builds from a different directory
-		data, err = os.ReadFile("bot_state.json")
-	}
 
 	var state BotState
 	if err == nil {
 		json.Unmarshal(data, &state)
 		return state.Cookies
 	}
-	return 0 // Default if file isn't found
+	return 0
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	dbURL := os.Getenv("DATABASE_URL")
 	totalClicks := 0
 
-	// 1. Fetch live clicks from Neon Database
 	if dbURL != "" {
 		db, err := sql.Open("postgres", dbURL)
 		if err == nil {
@@ -129,10 +123,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// 2. Fetch cookie count from JSON state
 	totalCookies := getCookieCount()
 
-	// 3. Fetch an idea based on the click count
 	idea := fetchGenerativeIdea(totalClicks)
 	lines := wrapText(idea, 60)
 
@@ -143,63 +135,78 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, line := range lines {
-		textSVG += fmt.Sprintf(`<tspan x="250" y="%d">%s</tspan>`, yOffset, line)
+		textSVG += fmt.Sprintf(`<tspan x="260" y="%d">%s</tspan>`, yOffset, line)
 		yOffset += 22
 	}
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
-	// The Upgraded Full-Body Animation SVG
+	// THE HYPER-DETAILED, UNBREAKABLE RED BAYMAX SVG
 	svg := fmt.Sprintf(`
 	<svg width="850" height="220" viewBox="0 0 850 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<defs>
+			<linearGradient id="armorGradient" x1="0%%" y1="0%%" x2="0%%" y2="100%%">
+				<stop offset="0%%" stop-color="#E4405F" />
+				<stop offset="100%%" stop-color="#A82A43" />
+			</linearGradient>
+			<filter id="glow">
+				<feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+				<feMerge>
+					<feMergeNode in="coloredBlur"/>
+					<feMergeNode in="SourceGraphic"/>
+				</feMerge>
+			</filter>
+		</defs>
 		<style>
 			.text-main { font: 600 16px 'Segoe UI', Ubuntu, sans-serif; fill: #ffffff; }
 			.text-sub { font: 500 14px 'Segoe UI', Ubuntu, sans-serif; fill: #a0a0a0; }
-			.bubble { fill: #1a1b26; stroke: #ff708d; stroke-width: 2px; rx: 12px; }
+			.bubble { fill: #1a1b26; stroke: #8080ff; stroke-width: 2.5px; filter: drop-shadow(0px 0px 3px #8080ff); }
+			.text-intro { font: italic 600 13px 'Segoe UI', Ubuntu, sans-serif; fill: #8080ff; }
 			
-			/* CSS Animation for Baymax Waving */
 			@keyframes wave {
 				0%% { transform: rotate(0deg); }
-				25%% { transform: rotate(35deg); }
+				25%% { transform: rotate(30deg); }
 				50%% { transform: rotate(0deg); }
-				75%% { transform: rotate(35deg); }
+				75%% { transform: rotate(30deg); }
 				100%% { transform: rotate(0deg); }
 			}
 			.arm-wave {
-				transform-origin: 140px 105px;
+				transform-origin: 155px 105px;
 				animation: wave 3s infinite ease-in-out;
 			}
 		</style>
 		
-		<ellipse cx="45" cy="155" rx="18" ry="45" fill="#E4405F" transform="rotate(20 45 155)" />
+		<circle cx="160" cy="20" r="5" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
+		<circle cx="172" cy="12" r="8" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
 
-		<path d="M 65 95 C 40 140, 30 210, 95 210 C 160 210, 150 140, 125 95 Z" fill="#E4405F" />
-		<path d="M 70 100 C 50 140, 42 200, 95 200 C 148 200, 140 140, 120 100 Z" fill="#D14836" />
+		<path d="M 210,10 A 30,30 0 0,1 270,10 A 35,35 0 0,1 330,15 A 30,30 0 0,1 380,50 A 35,35 0 0,1 360,95 A 30,30 0 0,1 300,98 A 35,35 0 0,1 220,95 A 30,30 0 0,1 185,60 A 35,35 0 0,1 210,10 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" />
+		<text x="220" y="55" class="text-intro">Hi, I'm Melt-Chan!</text>
+		<text x="215" y="72" class="text-intro">Advik-chan's idea generator!</text>
 
-		<g class="arm-wave">
-			<ellipse cx="150" cy="115" rx="18" ry="45" fill="#E4405F" transform="rotate(-30 150 115)" />
-		</g>
+		<ellipse cx="60" cy="155" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(25 60 155)" stroke="#121011" stroke-width="0.5"/>
+		<circle cx="68" cy="135" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <rect x="50" y="165" width="20" height="25" fill="#121011" rx="2" transform="rotate(25 60 155)" /> <path d="M 85 95 C 60 140, 50 210, 115 210 C 180 210, 170 140, 145 95 Z" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5" />
+		<path d="M 90 100 C 70 140, 62 200, 115 200 C 168 200, 160 140, 140 100 Z" fill="#D14836" stroke="#121011" stroke-width="0.5" opacity="0.6"/>
+		<ellipse cx="115" cy="130" rx="22" ry="18" fill="#121011" opacity="0.4"/> <circle cx="115" cy="130" r="10" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <g class="arm-wave">
+			<ellipse cx="165" cy="115" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(-35 165 115)" stroke="#121011" stroke-width="0.5"/>
+			<circle cx="157" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <rect x="155" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(-35 165 115)" /> </g>
 
-		<ellipse cx="95" cy="70" rx="42" ry="30" fill="#E4405F" />
-		<ellipse cx="95" cy="73" rx="34" ry="24" fill="#D14836" />
+		<ellipse cx="115" cy="70" rx="42" ry="30" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5"/>
+		<ellipse cx="115" cy="73" rx="34" ry="24" fill="#D14836" stroke="#121011" stroke-width="0.5" />
+		<ellipse cx="78" cy="70" rx="8" ry="12" fill="#E4405F" transform="rotate(-10 78 70)"/>
+		<ellipse cx="152" cy="70" rx="8" ry="12" fill="#E4405F" transform="rotate(10 152 70)"/>
 		
-		<circle cx="77" cy="73" r="5" fill="#121011" /> 
-		<circle cx="113" cy="73" r="5" fill="#121011" /> 
-		<line x1="77" y1="73" x2="113" y2="73" stroke="#121011" stroke-width="3" /> 
+		<circle cx="97" cy="73" r="5.5" fill="#121011" /> 
+		<circle cx="133" cy="73" r="5.5" fill="#121011" /> 
+		<line x1="97" y1="73" x2="133" y2="73" stroke="#121011" stroke-width="3.5" /> 
 		
-		<circle cx="63" cy="82" r="4" fill="#ff708d" opacity="0.6"/>
-		<circle cx="127" cy="82" r="4" fill="#ff708d" opacity="0.6"/>
-		
-		<text x="50" y="210" class="text-sub" fill="#ff708d" opacity="0.8">Hi, I'm Melt-Chan!</text>
-
-		<rect x="220" y="30" width="600" height="110" class="bubble" />
-		<path d="M 220 80 L 195 95 L 220 110 Z" fill="#1a1b26" stroke="#ff708d" stroke-width="2" stroke-linejoin="round" />
-		<path d="M 221 82 L 198 95 L 221 108 Z" fill="#1a1b26" /> 
+		<rect x="230" y="30" width="600" height="110" class="bubble" />
+		<path d="M 230 80 L 205 95 L 230 110 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" stroke-linejoin="round" />
+		<path d="M 231 82 L 208 95 L 231 108 Z" fill="#1a1b26" /> 
 		
 		<text class="text-main">%s</text>
 		
-		<text x="240" y="175" class="text-sub">✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click me to generate another!</text>
+		<text x="250" y="175" class="text-sub">✨ Ideas: %d</text>
 	</svg>`, textSVG, totalClicks, totalCookies)
 
 	fmt.Fprint(w, svg)

@@ -1,4 +1,4 @@
-hey i'm advik
+<h1>hey i'm advik</h1><br>
 currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few long term projects might be my own programming language, operating system, database but for a very niched community.
 
 
@@ -12,16 +12,4 @@ currently working on melt<br><br>learning about distributed systems, micro-servi
 ![](https://nirzak-streak-stats.vercel.app/?user=advikdivekar&theme=github_dark&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=advikdivekar&theme=github_dark&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
-## 🏆 GitHub Trophies
-![](https://github-profile-trophy.vercel.app/?username=advikdivekar&theme=radical&no-frame=false&no-bg=true&margin-w=4)
 
-### ✍️ Random Dev Quote
-![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
-
-### 🔝 Top Contributed Repo
-![](https://github-contributor-stats.vercel.app/api?username=advikdivekar&limit=5&theme=dark&combine_all_yearly_contributions=true)
-
----
-[![](https://visitcount.itsvg.in/api?id=advikdivekar&icon=0&color=0)](https://visitcount.itsvg.in)
-
-<!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->

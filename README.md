@@ -3,7 +3,7 @@ currently working on melt<br><br>learning about distributed systems, micro-servi
 
 <div align="center">
   <a href="https://advikdivekar.vercel.app/api/click">
-    <img src="https://advikdivekar.vercel.app/api/mascot" alt="Melt-Chan Live Bot" width="100%" />
+    <img src="https://advikdivekar.vercel.app/api/mascot?v=1" alt="Melt-Chan Live Bot" width="100%" />
   </a>
   <br/>
   <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Feed:Cookie&body=Just+dropping+off+a+cookie+for+Melt-Chan.">

@@ -1,9 +1,7 @@
 package handler
 
 import (
-	"bytes"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -35,79 +33,71 @@ func wrapText(text string, maxChars int) []string {
 	return lines
 }
 
-type GeminiResponse struct {
-	Candidates []struct {
-		Content struct {
-			Parts []struct {
-				Text string `json:"text"`
-			} `json:"parts"`
-		} `json:"content"`
-	} `json:"candidates"`
-}
-
-func fetchGenerativeIdea() string {
-	apiKey := strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
-
-	if apiKey == "" {
-		return "DEBUG: Gemini Key is still completely missing."
+// The Hardcoded Brain - Zero latency, zero API limits
+func fetchGenerativeIdea(clickCount int) string {
+	ideas := []string{
+		"Build a Go microservice that randomly deletes a repo when your Razorpay payment fails.",
+		"Create a Flutter app that shocks you if your Python script throws a syntax error.",
+		"Train an AI bot to automatically decline all GitHub pull requests with passive aggressive comments.",
+		"Build a distributed system where every node is just a really old Android phone.",
+		"Write a dropshipping bot that only sells products nobody wants using Razorpay test mode.",
+		"Create a Python script that changes your wallpaper to a random stack trace daily.",
+		"Build a Go backend that translates all SQL queries into Shakespearean English before executing.",
+		"Make a Flutter widget that slowly shrinks every time you tap it until it vanishes.",
+		"Train a neural network to predict when you will abandon your current side project.",
+		"Write an operating system in Python that only runs one infinite loop and then crashes.",
+		"Build a bot that buys you a coffee via Razorpay every time you fix a bug.",
+		"Create a distributed database where data is stored entirely in Discord chat messages.",
+		"Write a Go server that deliberately delays responses based on the current weather in Mumbai.",
+		"Make an AI that generates worse project ideas than this one and deploys them automatically.",
+		"Build a dropshipping store that randomly changes its prices every three seconds.",
+		"Create a Flutter app that requires you to scream to increase the phone volume.",
+		"Write a Python script that uninstalls a random library every time you hit save.",
+		"Build a Go CLI tool that git commits with AI generated lyrics from early 2000s pop.",
+		"Train an AI model to detect if you are crying through your webcam while debugging.",
+		"Create a database that uses Google Sheets as its primary storage engine.",
+		"Build a microservice that sends a Razorpay invoice to anyone who opens a GitHub issue.",
+		"Write a Flutter clone of Tinder but for matching orphaned Git branches.",
+		"Create a Python bot that replies LGTM to every PR but secretly introduces infinite loops.",
+		"Build a Go application that only compiles if the moon is currently full.",
+		"Make a distributed system that consensus checks by asking random people on Twitter.",
+		"Write a dropshipping script that only sources items that are completely out of stock.",
+		"Create an AI bot that explains your code back to you condescendingly.",
+		"Build a Go routine that continuously mines crypto but donates it to your enemies.",
+		"Write a Python backend that requires users to solve a captcha to log out.",
+		"Make a Flutter UI where all the buttons actively run away from your cursor.",
+		"Create a Razorpay integration that randomly discounts items by a fraction of a cent.",
+		"Build a bot that automatically emails your manager when you browse Reddit during work hours.",
+		"Write a Go server that refuses to handle HTTP requests if they are not polite enough.",
+		"Train an AI to rewrite your clean Python code into unreadable spaghetti code.",
+		"Create a distributed queue where messages are delivered via carrier pigeon APIs.",
+		"Build a Flutter app that completely forgets your data every time you close it.",
+		"Write a script that automatically buys domain names for every dumb idea you type.",
+		"Make a dropshipping AI that writes product descriptions entirely in Morse code.",
+		"Create a Go microservice that translates REST calls into SOAP just to inflict pain.",
+		"Build a Python tool that changes your system language to Klingon on compile errors.",
+		"Write a Razorpay webhook that triggers a physical confetti cannon in your room.",
+		"Make a Flutter game where the only objective is to compile the C++ engine.",
+		"Create a bot that analyzes your Spotify history and judges your coding music.",
+		"Build a distributed cache that purposely forgets things just to keep you guessing.",
+		"Write a script that replaces every semicolon in someone else's code with a Greek question mark.",
+		"Train an AI to automatically blame the intern in the git commit history.",
+		"Create a Python server that only accepts requests written in pure binary.",
+		"Build a Flutter calendar app that randomly deletes your meetings for the thrill of it.",
+		"Write a Razorpay script that bills you one rupee every time you use console log.",
+		"Make a Go CLI that plays sad trombone sounds when your build inevitably fails.",
 	}
 
-	// Switched to gemini-2.0-flash, which is globally stable
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey
-
-	prompt := "You are Melt-Chan, an unhinged, slightly melted clay AI companion. Generate a very short, wild, funny, or chaotic software project idea (maximum 15 words) for Advik. He codes in Go, Python, and Flutter, builds AI bots, works on distributed systems, and uses Razorpay for his dropshipping projects. Do not use quotation marks, hashtags, or emojis. Just give the raw idea."
-
-	reqBodyObj := map[string]interface{}{
-		"contents": []map[string]interface{}{
-			{
-				"parts": []map[string]interface{}{
-					{"text": prompt},
-				},
-			},
-		},
-	}
-
-	reqBodyBytes, _ := json.Marshal(reqBodyObj)
-
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyBytes))
-	if err != nil {
-		return "API ERROR: Vercel network failed to reach Google."
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		// X-RAY ERROR CATCHER: Read the actual error message from Google
-		var errResp map[string]interface{}
-		json.NewDecoder(resp.Body).Decode(&errResp)
-
-		errMsg := "Unknown error"
-		if errData, ok := errResp["error"].(map[string]interface{}); ok {
-			if msg, ok := errData["message"].(string); ok {
-				errMsg = msg
-			}
-		}
-		// Truncate the message so it fits in the speech bubble
-		if len(errMsg) > 80 {
-			errMsg = errMsg[:77] + "..."
-		}
-		return fmt.Sprintf("Google %d: %s", resp.StatusCode, errMsg)
-	}
-
-	var result GeminiResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Candidates) > 0 && len(result.Candidates[0].Content.Parts) > 0 {
-		idea := result.Candidates[0].Content.Parts[0].Text
-		idea = strings.TrimSpace(idea)
-		idea = strings.ReplaceAll(idea, "\n", " ")
-		return idea
-	}
-
-	return "API ERROR: Could not read Google's response."
+	// Use modulo to cycle through the array safely without ever going out of bounds
+	ideaIndex := clickCount % len(ideas)
+	return ideas[ideaIndex]
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	dbURL := os.Getenv("DATABASE_URL")
 	totalClicks := 0
 
+	// 1. Fetch live clicks from Neon Database
 	if dbURL != "" {
 		db, err := sql.Open("postgres", dbURL)
 		if err == nil {
@@ -116,7 +106,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	idea := fetchGenerativeIdea()
+	// 2. Fetch an idea based on the click count
+	idea := fetchGenerativeIdea(totalClicks)
 	lines := wrapText(idea, 60)
 
 	textSVG := ""

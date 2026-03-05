@@ -147,7 +147,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
-	svg := fmt.Sprintf(`<svg width="800" height="220" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+	svg := fmt.Sprintf(`<svg width="800" height="255" viewBox="0 0 800 255" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <linearGradient id="bodyGrad" x1="0.3" y1="0" x2="0.7" y2="1">
     <stop offset="0%%" stop-color="#ff4d4d"/>
@@ -228,9 +228,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <!-- IDEA TEXT -->
 <text class="idea">%s</text>
 
-<!-- ═══ BOTTOM BAR ═══ -->
-<!-- Removed SVG cookie button to prevent duplicate -->
-<text x="590" y="198" class="sub" text-anchor="end">✨ %d ideas   🍪 %d cookies</text>
+<!-- ═══ COUNTERS BADGE (Centered to Idea Bubble) ═══ -->
+<rect x="392" y="185" width="200" height="26" rx="13" class="btn-bg"/>
+<text x="492" y="202" class="sub" text-anchor="middle">✨ %d ideas  •  🍪 %d cookies</text>
+
+<!-- ═══ FEED COOKIE BUTTON (Below Melt) ═══ -->
+<rect x="5" y="222" width="170" height="26" rx="4" fill="#1a1b26" stroke="rgba(60, 68, 77, 0.85)" stroke-width="1"/>
+<text x="90" y="239" class="btn" text-anchor="middle" fill="#fff">🍪 FEED MELT-CHAN A COOKIE</text>
 
 </svg>`, textSVG, totalClicks, totalCookies)
 

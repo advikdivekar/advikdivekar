@@ -14,15 +14,13 @@ not a fun fact - i code in search of purpose.
 
 my next few long term projects might be my own programming language, operating system, database but for a very niched community.
 
+---
+
 <br/>
 
 <div align="center">
   <a href="https://advikdivekar.vercel.app/api/click">
-    <img src="https://advikdivekar.vercel.app/api/mascot?v=9" alt="Melt-Chan Live Bot" width="100%"/>
-  </a>
-  <br/>
-  <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Feed:Cookie&body=Just+dropping+off+a+cookie+for+Melt-Chan.">
-    <img src="https://img.shields.io/badge/🍪_Feed_Melt--Chan_a_Cookie-1a1b26?style=for-the-badge&logoColor=white" alt="Feed Cookie">
+    <img src="https://advikdivekar.vercel.app/api/mascot?v=10" alt="Melt-Chan Live Bot" width="100%"/>
   </a>
 </div>
 <br/>

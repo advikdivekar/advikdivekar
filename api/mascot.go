@@ -55,7 +55,8 @@ func fetchGenerativeIdea() string {
 		return "DEBUG: Gemini Key is still completely missing."
 	}
 
-	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
+	// UPGRADED MODEL TO FIX 404 ERROR
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey
 
 	prompt := "You are Melt-Chan, an unhinged, slightly melted clay AI companion. Generate a very short, wild, funny, or chaotic software project idea (maximum 15 words) for Advik. He codes in Go, Python, and Flutter, builds AI bots, works on distributed systems, and uses Razorpay for his dropshipping projects. Do not use quotation marks, hashtags, or emojis. Just give the raw idea."
 
@@ -78,7 +79,7 @@ func fetchGenerativeIdea() string {
 	}
 	defer resp.Body.Close()
 
-	// If Google rejects it, print the exact status code (e.g., 400, 403)
+	// If Google rejects it, print the exact status code (e.g., 400, 403, 404)
 	if resp.StatusCode != 200 {
 		return fmt.Sprintf("API ERROR: Google rejected the key. Status Code: %d", resp.StatusCode)
 	}

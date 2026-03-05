@@ -164,134 +164,109 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// ─────────────────────────────────────────────────────────────────────
 	svg := fmt.Sprintf(`<svg width="800" height="220" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <linearGradient id="redTop" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%%" stop-color="#ff5c6e"/>
-    <stop offset="100%%" stop-color="#c0192e"/>
+  <linearGradient id="bodyGrad" x1="0.3" y1="0" x2="0.7" y2="1">
+    <stop offset="0%%" stop-color="#ff4d4d"/>
+    <stop offset="50%%" stop-color="#e60000"/>
+    <stop offset="100%%" stop-color="#8a0000"/>
   </linearGradient>
-  <linearGradient id="redSide" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%%" stop-color="#ff5c6e"/>
-    <stop offset="100%%" stop-color="#9e0f22"/>
+  <linearGradient id="armLeft" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%%" stop-color="#ff4d4d"/>
+    <stop offset="100%%" stop-color="#8a0000"/>
   </linearGradient>
-  <linearGradient id="redDark" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%%" stop-color="#d41e35"/>
-    <stop offset="100%%" stop-color="#8a0c1d"/>
+  <linearGradient id="armRight" x1="1" y1="0" x2="0" y2="1">
+    <stop offset="0%%" stop-color="#ff4d4d"/>
+    <stop offset="100%%" stop-color="#8a0000"/>
   </linearGradient>
-  <linearGradient id="bubbleGrad" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%%" stop-color="#161b22"/>
-    <stop offset="100%%" stop-color="#0d1117"/>
-  </linearGradient>
-  <linearGradient id="btnGrad" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%%" stop-color="#21262d"/>
-    <stop offset="100%%" stop-color="#161b22"/>
-  </linearGradient>
-  <linearGradient id="coreGrad" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%%" stop-color="#a78bfa"/>
-    <stop offset="100%%" stop-color="#7c3aed"/>
+  <linearGradient id="legGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%%" stop-color="#e60000"/>
+    <stop offset="100%%" stop-color="#5c0000"/>
   </linearGradient>
 </defs>
 
 <style>
-  .idea    { font: 700 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #e6edf3; }
-  .sub     { font: 400 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #484f58; }
-  .nametag { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
-  .btn     { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #c9d1d9; letter-spacing: 0.06em; }
+  :root {
+    --text-color: #1f2328;
+    --sub-color: #656d76;
+    --bubble-bg: #ffffff;
+    --bubble-border: #d0d7de;
+    --btn-bg: #f6f8fa;
+    --btn-border: #d0d7de;
+    --btn-text: #24292f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-color: #e6edf3;
+      --sub-color: #8b949e;
+      --bubble-bg: #161b22;
+      --bubble-border: #30363d;
+      --btn-bg: #21262d;
+      --btn-border: #30363d;
+      --btn-text: #c9d1d9;
+    }
+  }
+  .idea { font: 700 19px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--text-color); }
+  .sub { font: 400 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--sub-color); }
+  .nametag { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--sub-color); }
+  .btn { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: var(--btn-text); letter-spacing: 0.06em; }
+  
+  .bubble-bg { fill: var(--bubble-bg); stroke: var(--bubble-border); stroke-width: 1.5; }
+  .bubble-arrow { fill: var(--bubble-bg); }
+  .bubble-arrow-outline { fill: var(--bubble-bg); stroke: var(--bubble-border); stroke-width: 1.5; stroke-linejoin: round; }
+  .btn-bg { fill: var(--btn-bg); stroke: var(--btn-border); stroke-width: 1; }
 </style>
 
-<!-- CARD BACKGROUND -->
-<rect x="1" y="1" width="798" height="218" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1.5"/>
+<!-- BACKGROUND -->
+<!-- Fully transparent background to seamlessly blend into README! -->
 
-<!-- red accent top -->
-<rect x="1" y="1" width="798" height="3" rx="2" fill="#c0192e" opacity="0.7"/>
+<!-- ═══ MELT — RED BAYMAX ═══ -->
+<!-- SHADOW -->
+<ellipse cx="90" cy="208" rx="60" ry="6" fill="#000" opacity="0.15"/>
 
-<!-- ═══ MELT — SITTING RED BAYMAX ═══ -->
-
-<!-- LEFT FOOT -->
-<ellipse cx="56" cy="202" rx="26" ry="13" fill="url(#redDark)"/>
-<ellipse cx="50" cy="197" rx="10" ry="5" fill="#ff8090" opacity="0.28"/>
-
-<!-- RIGHT FOOT -->
-<ellipse cx="124" cy="202" rx="26" ry="13" fill="url(#redDark)"/>
-<ellipse cx="118" cy="197" rx="10" ry="5" fill="#ff8090" opacity="0.28"/>
-
-<!-- LEFT THIGH -->
-<ellipse cx="62" cy="183" rx="30" ry="22" fill="url(#redTop)"/>
-<ellipse cx="56" cy="174" rx="12" ry="8" fill="#ff8090" opacity="0.22"/>
-
-<!-- RIGHT THIGH -->
-<ellipse cx="118" cy="183" rx="30" ry="22" fill="url(#redTop)"/>
-<ellipse cx="112" cy="174" rx="12" ry="8" fill="#ff8090" opacity="0.22"/>
-
-<!-- BODY -->
-<ellipse cx="90" cy="158" rx="52" ry="56" fill="url(#redTop)"/>
-<ellipse cx="74" cy="136" rx="18" ry="14" fill="#ff8090" opacity="0.2"/>
-<ellipse cx="116" cy="168" rx="16" ry="22" fill="#7a0b1c" opacity="0.3"/>
+<!-- LEGS -->
+<ellipse cx="65" cy="186" rx="16" ry="24" fill="url(#legGrad)"/>
+<ellipse cx="115" cy="186" rx="16" ry="24" fill="url(#legGrad)"/>
 
 <!-- LEFT ARM -->
-<ellipse cx="48" cy="154" rx="20" ry="30" fill="url(#redSide)" transform="rotate(-25 48 154)"/>
-<ellipse cx="42" cy="144" rx="8" ry="11" fill="#ff8090" opacity="0.18" transform="rotate(-25 42 144)"/>
-<ellipse cx="74" cy="177" rx="24" ry="16" fill="url(#redDark)" transform="rotate(-10 74 177)"/>
+<ellipse cx="38" cy="125" rx="22" ry="60" fill="url(#armLeft)" transform="rotate(15 38 125)"/>
 
-<!-- RIGHT ARM (crosses over left) -->
-<ellipse cx="132" cy="154" rx="20" ry="30" fill="url(#redSide)" transform="rotate(25 132 154)"/>
-<ellipse cx="126" cy="144" rx="8" ry="11" fill="#ff8090" opacity="0.18" transform="rotate(25 126 144)"/>
-<ellipse cx="108" cy="174" rx="26" ry="17" fill="url(#redTop)" transform="rotate(8 108 174)"/>
+<!-- RIGHT ARM -->
+<ellipse cx="142" cy="125" rx="22" ry="60" fill="url(#armRight)" transform="rotate(-15 142 125)"/>
 
-<!-- CLASPED HANDS -->
-<ellipse cx="90" cy="188" rx="16" ry="11" fill="url(#redDark)"/>
-<ellipse cx="86" cy="184" rx="6" ry="4" fill="#ff8090" opacity="0.18"/>
-
-<!-- CHEST CORE -->
-<circle cx="90" cy="157" r="11" fill="#12101a"/>
-<circle cx="90" cy="157" r="7" fill="url(#coreGrad)"/>
-<circle cx="90" cy="157" r="3" fill="#ddd6fe"/>
-<circle cx="88" cy="155" r="1.5" fill="white" opacity="0.45"/>
-
-<!-- NECK -->
-<rect x="72" y="107" width="36" height="18" rx="9" fill="url(#redTop)"/>
+<!-- BODY -->
+<ellipse cx="90" cy="130" rx="58" ry="70" fill="url(#bodyGrad)"/>
 
 <!-- HEAD -->
-<ellipse cx="90" cy="88" rx="52" ry="50" fill="url(#redTop)"/>
-<ellipse cx="70" cy="66" rx="20" ry="16" fill="#ff8090" opacity="0.2"/>
-<ellipse cx="108" cy="108" rx="18" ry="12" fill="#7a0b1c" opacity="0.28"/>
+<ellipse cx="90" cy="58" rx="42" ry="28" fill="url(#bodyGrad)"/>
 
-<!-- FACE PLATE -->
-<ellipse cx="90" cy="92" rx="36" ry="28" fill="url(#redDark)"/>
-<ellipse cx="90" cy="96" rx="30" ry="22" fill="#6a0918" opacity="0.38"/>
+<!-- EYES (Black, connected by line) -->
+<line x1="72" y1="58" x2="108" y2="58" stroke="#111" stroke-width="2.5"/>
+<circle cx="72" cy="58" r="5.5" fill="#111"/>
+<circle cx="108" cy="58" r="5.5" fill="#111"/>
 
-<!-- EYES -->
-<ellipse cx="77"  cy="89" rx="8.5" ry="9.5" fill="#0d1117"/>
-<ellipse cx="103" cy="89" rx="8.5" ry="9.5" fill="#0d1117"/>
-<ellipse cx="74"  cy="85" rx="3"   ry="2.5" fill="white" opacity="0.55"/>
-<ellipse cx="100" cy="85" rx="3"   ry="2.5" fill="white" opacity="0.55"/>
-
-<!-- CHEEKS -->
-<ellipse cx="62"  cy="103" rx="7" ry="4" fill="#ff8fa3" opacity="0.4"/>
-<ellipse cx="118" cy="103" rx="7" ry="4" fill="#ff8fa3" opacity="0.4"/>
+<!-- CHEST BADGE -->
+<circle cx="120" cy="100" r="7" fill="#cc0000" stroke="#8a0000" stroke-width="1.5"/>
+<line x1="116" y1="100" x2="124" y2="100" stroke="#8a0000" stroke-width="1.5"/>
 
 <!-- NAME BUBBLE -->
-<rect x="20" y="6" width="140" height="34" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-<polygon points="76,40 84,52 92,40" fill="#161b22" stroke="#30363d" stroke-width="1" stroke-linejoin="round"/>
-<polygon points="77,41 84,50 91,41" fill="#161b22"/>
-<text x="90" y="21" class="nametag" text-anchor="middle">Hello! I'm Melt 👋</text>
-<text x="90" y="34" class="nametag" text-anchor="middle">by Advik-chan ✨</text>
-
-<!-- DIVIDER -->
-<line x1="186" y1="14" x2="186" y2="206" stroke="#21262d" stroke-width="1"/>
+<rect x="25" y="4" width="130" height="32" rx="8" class="bubble-bg"/>
+<polygon points="76,36 84,46 92,36" class="bubble-arrow-outline"/>
+<polygon points="77,36 84,45 91,36" class="bubble-arrow"/>
+<text x="90" y="18" class="nametag" text-anchor="middle">Hello! I'm Melt 👋</text>
+<text x="90" y="30" class="nametag" text-anchor="middle">by Advik ✨</text>
 
 <!-- ═══ IDEA BUBBLE ═══ -->
-<rect x="194" y="14" width="596" height="158" rx="10" fill="url(#bubbleGrad)" stroke="#21262d" stroke-width="1.5"/>
-<!-- arrow -->
-<polygon points="194,93 179,85 179,101" fill="#161b22" stroke="#21262d" stroke-width="1.5" stroke-linejoin="round"/>
-<polygon points="195,87 183,85 195,93" fill="#161b22"/>
-<polygon points="195,99 183,101 195,93" fill="#161b22"/>
+<rect x="194" y="14" width="596" height="158" rx="12" class="bubble-bg"/>
+<!-- Arrow pointing from bubble to Mascot -->
+<polygon points="194,93 179,85 194,101" class="bubble-arrow-outline"/>
+<polygon points="195,87 181,93 195,99" class="bubble-arrow"/>
 
-<!-- IDEA TEXT — big, centred -->
+<!-- IDEA TEXT -->
 <text class="idea">%s</text>
 
 <!-- ═══ BOTTOM BAR ═══ -->
 <text x="200" y="198" class="sub">✨ %d ideas   🍪 %d cookies</text>
 
-<rect x="574" y="183" width="210" height="28" rx="6" fill="url(#btnGrad)" stroke="#30363d" stroke-width="1"/>
+<rect x="574" y="183" width="210" height="28" rx="6" class="btn-bg"/>
 <text x="679" y="201" class="btn" text-anchor="middle">🍪 Feed Melt a Cookie</text>
 
 </svg>`, textSVG, totalClicks, totalCookies)

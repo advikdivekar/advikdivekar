@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath" // THIS FIXES THE ERRORS IN YOUR SCREENSHOT
+	"path/filepath"
 	"strings"
 
 	_ "github.com/lib/pq"
@@ -98,7 +98,6 @@ type BotState struct {
 }
 
 func getCookieCount() int {
-	// Look for bot_state.json in the project root
 	cwd, _ := os.Getwd()
 	path := filepath.Join(cwd, "bot_state.json")
 	data, err := os.ReadFile(path)
@@ -126,7 +125,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	totalCookies := getCookieCount()
 
 	idea := fetchGenerativeIdea(totalClicks)
-	lines := wrapText(idea, 60)
+	// Reduced max chars from 60 to 45 so text fits in the new right-aligned bubble
+	lines := wrapText(idea, 45)
 
 	textSVG := ""
 	yOffset := 65
@@ -135,14 +135,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, line := range lines {
-		textSVG += fmt.Sprintf(`<tspan x="260" y="%d">%s</tspan>`, yOffset, line)
+		// Moved text start X coordinate to 400
+		textSVG += fmt.Sprintf(`<tspan x="400" y="%d">%s</tspan>`, yOffset, line)
 		yOffset += 22
 	}
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
-	// THE HYPER-DETAILED, UNBREAKABLE RED BAYMAX SVG
 	svg := fmt.Sprintf(`
 	<svg width="850" height="220" viewBox="0 0 850 220" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<defs>
@@ -177,19 +177,27 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			}
 		</style>
 		
-		<circle cx="160" cy="20" r="5" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
-		<circle cx="172" cy="12" r="8" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
+		<circle cx="150" cy="70" r="4" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
+		<circle cx="170" cy="55" r="7" fill="#1a1b26" stroke="#8080ff" stroke-width="1.5"/>
 
-		<path d="M 210,10 A 30,30 0 0,1 270,10 A 35,35 0 0,1 330,15 A 30,30 0 0,1 380,50 A 35,35 0 0,1 360,95 A 30,30 0 0,1 300,98 A 35,35 0 0,1 220,95 A 30,30 0 0,1 185,60 A 35,35 0 0,1 210,10 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" />
-		<text x="220" y="55" class="text-intro">Hi, I'm Melt-Chan!</text>
-		<text x="215" y="72" class="text-intro">Advik-chan's idea generator!</text>
+		<path d="M 190,50 A 25,25 0 0,1 215,20 A 35,35 0 0,1 275,10 A 35,35 0 0,1 335,20 A 25,25 0 0,1 360,50 A 25,25 0 0,1 335,80 L 215,80 A 25,25 0 0,1 190,50 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" />
+		<text x="210" y="45" class="text-intro">Hi, I'm Melt-Chan!</text>
+		<text x="200" y="65" class="text-intro">Advik's Idea Generator</text>
 
-		<ellipse cx="60" cy="155" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(25 60 155)" stroke="#121011" stroke-width="0.5"/>
-		<circle cx="68" cy="135" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <rect x="50" y="165" width="20" height="25" fill="#121011" rx="2" transform="rotate(25 60 155)" /> <path d="M 85 95 C 60 140, 50 210, 115 210 C 180 210, 170 140, 145 95 Z" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5" />
+		<ellipse cx="65" cy="115" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(35 65 115)" stroke="#121011" stroke-width="0.5"/>
+		<circle cx="73" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
+		<rect x="55" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(35 65 115)" /> 
+
+		<path d="M 85 95 C 60 140, 50 210, 115 210 C 180 210, 170 140, 145 95 Z" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5" />
 		<path d="M 90 100 C 70 140, 62 200, 115 200 C 168 200, 160 140, 140 100 Z" fill="#D14836" stroke="#121011" stroke-width="0.5" opacity="0.6"/>
-		<ellipse cx="115" cy="130" rx="22" ry="18" fill="#121011" opacity="0.4"/> <circle cx="115" cy="130" r="10" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <g class="arm-wave">
+		<ellipse cx="115" cy="130" rx="22" ry="18" fill="#121011" opacity="0.4"/> 
+		<circle cx="115" cy="130" r="10" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
+
+		<g class="arm-wave">
 			<ellipse cx="165" cy="115" rx="18" ry="40" fill="url(#armorGradient)" transform="rotate(-35 165 115)" stroke="#121011" stroke-width="0.5"/>
-			<circle cx="157" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> <rect x="155" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(-35 165 115)" /> </g>
+			<circle cx="157" cy="95" r="7" fill="#8080ff" opacity="0.8" filter="url(#glow)"/> 
+			<rect x="155" y="125" width="20" height="25" fill="#121011" rx="2" transform="rotate(-35 165 115)" /> 
+		</g>
 
 		<ellipse cx="115" cy="70" rx="42" ry="30" fill="url(#armorGradient)" stroke="#121011" stroke-width="0.5"/>
 		<ellipse cx="115" cy="73" rx="34" ry="24" fill="#D14836" stroke="#121011" stroke-width="0.5" />
@@ -200,13 +208,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<circle cx="133" cy="73" r="5.5" fill="#121011" /> 
 		<line x1="97" y1="73" x2="133" y2="73" stroke="#121011" stroke-width="3.5" /> 
 		
-		<rect x="230" y="30" width="600" height="110" class="bubble" />
-		<path d="M 230 80 L 205 95 L 230 110 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" stroke-linejoin="round" />
-		<path d="M 231 82 L 208 95 L 231 108 Z" fill="#1a1b26" /> 
+		<rect x="380" y="30" width="450" height="110" class="bubble" />
+		<path d="M 380 80 L 355 95 L 380 110 Z" fill="#1a1b26" stroke="#8080ff" stroke-width="2.5" stroke-linejoin="round" />
+		<path d="M 381 82 L 358 95 L 381 108 Z" fill="#1a1b26" /> 
 		
 		<text class="text-main">%s</text>
 		
-		<text x="250" y="175" class="text-sub">✨ Ideas: %d</text>
+		<text x="400" y="175" class="text-sub">✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click me!</text>
 	</svg>`, textSVG, totalClicks, totalCookies)
 
 	fmt.Fprint(w, svg)

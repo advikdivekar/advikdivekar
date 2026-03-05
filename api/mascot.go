@@ -182,8 +182,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<circle cx="165" cy="40" r="7" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
 		
 		<rect x="195" y="15" width="140" height="50" rx="25" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)"/>
-		<text x="265" y="35" class="text-intro" text-anchor="middle">Hi, I'm Melt-Chan!</text>
-		<text x="265" y="52" class="text-intro" text-anchor="middle">Advik's AI companion.</text>
+		<text x="265" y="35" class="text-intro" text-anchor="middle">Hello! I'm Melt</text>
+		<text x="265" y="52" class="text-intro" text-anchor="middle">Built by Advik-chan(hehe)</text>
 
 		<ellipse cx="60" cy="135" rx="22" ry="45" fill="url(#armorGradient)" transform="rotate(25 60 135)" />
 		<circle cx="68" cy="105" r="7" fill="#8b5cf6" opacity="0.8" filter="url(#glow)"/> 

@@ -148,7 +148,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		
 		<text class="text-main">%s</text>
 		
-		<text x="210" y="175" class="text-sub">✨ Ideas generated: %d   |   👆 Click my face to generate another!</text>
+		<text x="210" y="175" class="text-sub">✨ Ideas generated: %d</text>
 	</svg>`, textSVG, totalClicks)
 
 	fmt.Fprint(w, svg)

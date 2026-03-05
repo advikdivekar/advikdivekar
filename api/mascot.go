@@ -47,12 +47,21 @@ type GeminiResponse struct {
 	} `json:"candidates"`
 }
 
-// The AI Brain
+// The AI Brain with built-in Vercel Debugger
 func fetchGenerativeIdea() string {
 	apiKey := os.Getenv("GEMINI_API_KEY")
+	dbURL := os.Getenv("DATABASE_URL")
+
+	// DEBUGGING LOGIC: Let's see exactly what Vercel is missing
+	if apiKey == "" && dbURL == "" {
+		return "DEBUG: Vercel is blind. BOTH Gemini Key and Database URL are missing."
+	}
 	if apiKey == "" {
-		// Fallback if Vercel still hasn't loaded the API key
-		return "Build a micro-service that randomly deletes one line of code from your repo every time you drink coffee."
+		return "DEBUG: Neon DB is connected, but GEMINI_API_KEY is missing."
+	}
+	if dbURL == "" {
+		// Shows the first 4 characters of the key just to prove Vercel can see it
+		return fmt.Sprintf("DEBUG: Gemini Key found (starts with %s), but Database URL is missing.", apiKey[:4])
 	}
 
 	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
@@ -68,14 +77,13 @@ func fetchGenerativeIdea() string {
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBody))
 	if err != nil || resp.StatusCode != 200 {
-		return "Write your own database from scratch just to feel something."
+		return "API ERROR: Failed to connect to Gemini."
 	}
 	defer resp.Body.Close()
 
 	var result GeminiResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Candidates) > 0 && len(result.Candidates[0].Content.Parts) > 0 {
 		idea := result.Candidates[0].Content.Parts[0].Text
-		// Clean up the output to ensure it fits nicely
 		idea = strings.TrimSpace(idea)
 		idea = strings.ReplaceAll(idea, "\n", " ")
 		return idea
@@ -93,6 +101,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		db, err := sql.Open("postgres", dbURL)
 		if err == nil {
 			defer db.Close()
+			// Silently fail if DB isn't set up yet, the debugger will catch the missing URL
 			db.QueryRow("SELECT clicks FROM melt_stats WHERE id = 1").Scan(&totalClicks)
 		}
 	}

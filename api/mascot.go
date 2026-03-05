@@ -11,7 +11,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Wraps text so it never breaks out of the bubble
+// Tightened wrapping for a smaller, cleaner box
 func wrapText(text string, maxChars int) []string {
 	words := strings.Fields(text)
 	var lines []string
@@ -122,20 +122,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	totalCookies := getCookieCount()
 	idea := fetchGenerativeIdea(totalClicks)
-	lines := wrapText(idea, 45)
+	// Reduced maxChars to 38 for a tighter look
+	lines := wrapText(idea, 38)
 
-	startY := 105
+	// Centering text perfectly inside the new, smaller box (Y=40 to Y=160)
+	startY := 100
 	if len(lines) == 2 {
-		startY = 92
+		startY = 88
 	} else if len(lines) == 3 {
-		startY = 80
+		startY = 75
 	} else if len(lines) == 4 {
-		startY = 68
+		startY = 62
 	}
 
 	textSVG := ""
 	for _, line := range lines {
-		textSVG += fmt.Sprintf(`<tspan x="605" y="%d" text-anchor="middle">%s</tspan>`, startY, line)
+		// Centered at X=595 inside the 380-wide box
+		textSVG += fmt.Sprintf(`<tspan x="595" y="%d" text-anchor="middle">%s</tspan>`, startY, line)
 		startY += 26
 	}
 
@@ -143,7 +146,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, no-store, must-revalidate")
 
 	svg := fmt.Sprintf(`
-	<svg width="850" height="240" viewBox="0 0 850 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<svg width="850" height="220" viewBox="0 0 850 220" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<defs>
 			<linearGradient id="armorGradient" x1="0%%" y1="0%%" x2="0%%" y2="100%%">
 				<stop offset="0%%" stop-color="#ff4b6e" />
@@ -157,47 +160,33 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				</feMerge>
 			</filter>
 			<filter id="shadow" x="-10%%" y="-10%%" width="120%%" height="120%%">
-				<feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#8b5cf6" flood-opacity="0.3"/>
+				<feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#8b5cf6" flood-opacity="0.3"/>
 			</filter>
 		</defs>
 		<style>
-			.text-main { font: 600 17px 'Segoe UI', Ubuntu, sans-serif; fill: #ffffff; }
-			.text-sub { font: 500 14px 'Segoe UI', Ubuntu, sans-serif; fill: #a0a0a0; }
-			.text-intro { font: italic 600 13px 'Segoe UI', Ubuntu, sans-serif; fill: #a78bfa; }
-			
-			@keyframes wave {
-				0%% { transform: rotate(0deg); }
-				25%% { transform: rotate(40deg); }
-				50%% { transform: rotate(0deg); }
-				75%% { transform: rotate(40deg); }
-				100%% { transform: rotate(0deg); }
-			}
-			.arm-wave {
-				transform-origin: 160px 105px;
-				animation: wave 2.5s infinite ease-in-out;
-			}
+			.text-main { font: 600 16px 'Segoe UI', Ubuntu, sans-serif; fill: #ffffff; }
+			.text-sub { font: 500 13px 'Segoe UI', Ubuntu, sans-serif; fill: #a0a0a0; }
+			.text-intro { font: italic 600 12px 'Segoe UI', Ubuntu, sans-serif; fill: #a78bfa; }
 		</style>
 		
 		<circle cx="150" cy="55" r="4" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
 		<circle cx="165" cy="40" r="7" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2"/>
 		
-		<rect x="195" y="15" width="140" height="50" rx="25" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)"/>
-		<text x="265" y="35" class="text-intro" text-anchor="middle">Hello! I'm Melt</text>
+		<rect x="185" y="15" width="160" height="55" rx="27" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.2" filter="url(#shadow)"/>
+		<text x="265" y="34" class="text-intro" text-anchor="middle">Hello! I'm Melt</text>
 		<text x="265" y="52" class="text-intro" text-anchor="middle">Built by Advik-chan(hehe)</text>
 
 		<ellipse cx="60" cy="135" rx="22" ry="45" fill="url(#armorGradient)" transform="rotate(25 60 135)" />
 		<circle cx="68" cy="105" r="7" fill="#8b5cf6" opacity="0.8" filter="url(#glow)"/> 
 
-		<path d="M 70 100 C 40 160, 45 230, 110 230 C 175 230, 180 160, 150 100 Z" fill="url(#armorGradient)" />
-		<path d="M 75 110 C 55 160, 60 220, 110 220 C 160 220, 165 160, 145 110 Z" fill="#7a0f25" opacity="0.4"/>
+		<path d="M 70 100 C 40 160, 45 220, 110 220 C 175 220, 180 160, 150 100 Z" fill="url(#armorGradient)" />
+		<path d="M 75 110 C 55 160, 60 210, 110 210 C 160 210, 165 160, 145 110 Z" fill="#7a0f25" opacity="0.4"/>
 		
 		<circle cx="110" cy="140" r="16" fill="#121011" opacity="0.6"/>
 		<circle cx="110" cy="140" r="9" fill="#8b5cf6" filter="url(#glow)"/> 
 
-		<g class="arm-wave">
-			<ellipse cx="160" cy="135" rx="22" ry="45" fill="url(#armorGradient)" />
-			<rect x="150" y="145" width="20" height="25" fill="#121011" rx="4" opacity="0.5" /> 
-		</g>
+		<ellipse cx="160" cy="135" rx="22" ry="45" fill="url(#armorGradient)" transform="rotate(-15 160 135)" />
+		<rect x="150" y="145" width="20" height="25" fill="#121011" rx="4" opacity="0.5" /> 
 
 		<ellipse cx="110" cy="75" rx="45" ry="32" fill="url(#armorGradient)" />
 		<ellipse cx="110" cy="78" rx="36" ry="24" fill="#D14836" />
@@ -211,13 +200,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		<circle cx="75" cy="86" r="5" fill="#ff708d" opacity="0.8"/>
 		<circle cx="145" cy="86" r="5" fill="#ff708d" opacity="0.8"/>
 
-		<rect x="375" y="15" width="460" height="170" rx="16" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" filter="url(#shadow)" />
-		<path d="M 375 75 L 350 85 L 375 95 Z" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.5" stroke-linejoin="round"/>
-		<path d="M 377 77 L 354 85 L 377 93 Z" fill="#1a1b26" /> 
+		<rect x="380" y="40" width="430" height="120" rx="16" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.2" filter="url(#shadow)" />
+		
+		<path d="M 380 90 L 355 100 L 380 110 Z" fill="#1a1b26" stroke="#8b5cf6" stroke-width="2.2" stroke-linejoin="round"/>
+		<path d="M 382 92 L 359 100 L 382 108 Z" fill="#1a1b26" /> 
 		
 		<text class="text-main">%s</text>
 		
-		<text x="605" y="220" class="text-sub" text-anchor="middle">✨ Ideas generated: %d   |   🍪 Cookies eaten: %d   |   👆 Click me!</text>
+		<text x="595" y="185" class="text-sub" text-anchor="middle">✨ Ideas: %d   |   🍪 Cookies: %d   |   👆 Click me!</text>
 	</svg>`, textSVG, totalClicks, totalCookies)
 
 	fmt.Fprint(w, svg)

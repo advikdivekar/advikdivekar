@@ -233,7 +233,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <text x="492" y="202" class="sub" text-anchor="middle">✨ %d ideas  •  🍪 %d cookies</text>
 
 <!-- ═══ FEED COOKIE BUTTON (Below Melt) ═══ -->
-<rect x="5" y="222" width="170" height="26" rx="4" fill="#1a1b26" stroke="rgba(60, 68, 77, 0.85)" stroke-width="1"/>
+<rect x="5" y="222" width="180" height="26" rx="4" fill="#1a1b26" stroke="rgba(60, 68, 77, 0.85)" stroke-width="1"/>
 <text x="90" y="239" class="btn" text-anchor="middle" fill="#fff">🍪 FEED MELT-CHAN A COOKIE</text>
 
 </svg>`, textSVG, totalClicks, totalCookies)

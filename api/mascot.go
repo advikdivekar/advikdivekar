@@ -36,7 +36,6 @@ func wrapText(text string, maxChars int) []string {
 	return lines
 }
 
-// Struct to handle the JSON response from Gemini
 type GeminiResponse struct {
 	Candidates []struct {
 		Content struct {
@@ -47,39 +46,42 @@ type GeminiResponse struct {
 	} `json:"candidates"`
 }
 
-// The AI Brain with built-in Vercel Debugger
+// The Upgraded AI Brain
 func fetchGenerativeIdea() string {
-	apiKey := os.Getenv("GEMINI_API_KEY")
-	dbURL := os.Getenv("DATABASE_URL")
+	// TrimSpace ensures no accidental spaces were copied from Vercel!
+	apiKey := strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
 
-	// DEBUGGING LOGIC: Let's see exactly what Vercel is missing
-	if apiKey == "" && dbURL == "" {
-		return "DEBUG: Vercel is blind. BOTH Gemini Key and Database URL are missing."
-	}
 	if apiKey == "" {
-		return "DEBUG: Neon DB is connected, but GEMINI_API_KEY is missing."
-	}
-	if dbURL == "" {
-		// Shows the first 4 characters of the key just to prove Vercel can see it
-		return fmt.Sprintf("DEBUG: Gemini Key found (starts with %s), but Database URL is missing.", apiKey[:4])
+		return "DEBUG: Gemini Key is still completely missing."
 	}
 
 	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey
 
-	// The hidden prompt that gives Melt-Chan her personality and context
-	prompt := `You are Melt-Chan, an unhinged, slightly melted clay AI companion. Generate a very short, wild, funny, or chaotic software project idea (maximum 15 words) for Advik. He codes in Go, Python, and Flutter, builds AI bots, works on distributed systems, and uses Razorpay for his dropshipping projects. Do not use quotation marks, hashtags, or emojis. Just give the raw idea.`
+	prompt := "You are Melt-Chan, an unhinged, slightly melted clay AI companion. Generate a very short, wild, funny, or chaotic software project idea (maximum 15 words) for Advik. He codes in Go, Python, and Flutter, builds AI bots, works on distributed systems, and uses Razorpay for his dropshipping projects. Do not use quotation marks, hashtags, or emojis. Just give the raw idea."
 
-	reqBody := []byte(fmt.Sprintf(`{
-		"contents": [{
-			"parts": [{"text": "%s"}]
-		}]
-	}`, prompt))
+	// Safely building the JSON payload to prevent syntax errors
+	reqBodyObj := map[string]interface{}{
+		"contents": []map[string]interface{}{
+			{
+				"parts": []map[string]interface{}{
+					{"text": prompt},
+				},
+			},
+		},
+	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBody))
-	if err != nil || resp.StatusCode != 200 {
-		return "API ERROR: Failed to connect to Gemini."
+	reqBodyBytes, _ := json.Marshal(reqBodyObj)
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyBytes))
+	if err != nil {
+		return "API ERROR: Vercel network failed to reach Google."
 	}
 	defer resp.Body.Close()
+
+	// If Google rejects it, print the exact status code (e.g., 400, 403)
+	if resp.StatusCode != 200 {
+		return fmt.Sprintf("API ERROR: Google rejected the key. Status Code: %d", resp.StatusCode)
+	}
 
 	var result GeminiResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Candidates) > 0 && len(result.Candidates[0].Content.Parts) > 0 {
@@ -89,31 +91,28 @@ func fetchGenerativeIdea() string {
 		return idea
 	}
 
-	return "Create an AI that just replies 'LGTM' to every PR."
+	return "API ERROR: Could not read Google's response."
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	dbURL := os.Getenv("DATABASE_URL")
 	totalClicks := 0
 
-	// Fetch actual clicks from Neon DB
 	if dbURL != "" {
 		db, err := sql.Open("postgres", dbURL)
 		if err == nil {
 			defer db.Close()
-			// Silently fail if DB isn't set up yet, the debugger will catch the missing URL
 			db.QueryRow("SELECT clicks FROM melt_stats WHERE id = 1").Scan(&totalClicks)
 		}
 	}
 
 	idea := fetchGenerativeIdea()
-	lines := wrapText(idea, 60) // Wraps text at 60 characters
+	lines := wrapText(idea, 60)
 
-	// Build the dynamic <tspan> lines for the SVG
 	textSVG := ""
 	yOffset := 65
 	if len(lines) == 1 {
-		yOffset = 80 // Center if it's only one line
+		yOffset = 80
 	}
 
 	for _, line := range lines {

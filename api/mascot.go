@@ -289,10 +289,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <text class="idea">%s</text>
 
 <!-- ═══ BOTTOM BAR ═══ -->
-<text x="200" y="198" class="sub">✨ %d ideas   🍪 %d cookies   👆 click the image for a new idea</text>
+<text x="200" y="198" class="sub">✨ %d ideas   🍪 %d cookies</text>
 
 <rect x="574" y="183" width="210" height="28" rx="6" fill="url(#btnGrad)" stroke="#30363d" stroke-width="1"/>
-<text x="679" y="201" class="btn" text-anchor="middle">🍪 Feed Melt a Cookie</text>
+<text x="679" y="201" class="btn" text-anchor="left">🍪 Feed Melt a Cookie</text>
 
 </svg>`, textSVG, totalClicks, totalCookies)
 

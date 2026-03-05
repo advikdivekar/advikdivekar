@@ -1,19 +1,16 @@
 <h1>hey i'm advik</h1><br>
-currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>
+currently working on melt<br><br>learning about distributed systems, micro-services and computer networking<br><br>anyone who comes across my profile help me with melt - my clay game hehe<br><br>you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few long term projects might be my own programming language, operating system, database but for a very niched community.
 
 <div align="center">
-  <a href="https://github.com/advikdivekar/advikdivekar">
-    <img src="https://advikdivekar.vercel.app/api/mascot" alt="Melt-Chan Live Bot" />
+  <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Idea&body=Melt-Chan,+give+me+a+wild+project+idea!">
+    <img src="https://advikdivekar.vercel.app/api/mascot" alt="Melt-Chan Live Bot" width="100%" />
   </a>
   <br/>
-  <b>Interact with Melt-Chan:</b><br/>
-  <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Feed:Cookie&body=Just+dropping+off+a+cookie+for+the+bot.+Nom+nom.">Give Cookie 🍪</a> | 
-  <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Roast:Fire&body=Write+your+roast+here:+">Roast Advik 🔥</a>
+  <a href="https://github.com/advikdivekar/advikdivekar/issues/new?title=Melt-Chan-Feed:Cookie&body=Just+dropping+off+a+cookie+for+Melt-Chan.">
+    <img src="https://img.shields.io/badge/🍪_Feed_Melt--Chan_a_Cookie-1a1b26?style=for-the-badge&logoColor=white" alt="Feed Cookie">
+  </a>
 </div>
 <br/>
-
-you and i can work on any project hehe<br><br>mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com<br><br>not a fun fact - i code in search of purpose.<br><br>my next few long term projects might be my own programming language, operating system, database but for a very niched community.
-
 
 ## 🌐 Socials:
 [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/advikkk.4) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/advikdivekar) [![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/advikk_4) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:advikdivekar@gmail.com) 

@@ -18,65 +18,66 @@ jobs:
         with:
           python-version: '3.x'
           
-      - name: Process Interaction
+      - name: Process Cookies
         env:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           USER_LOGIN: ${{ github.event.issue.user.login }}
         run: |
           python -c '
           import json, os
-          
           title = os.environ.get("ISSUE_TITLE", "")
           user = os.environ.get("USER_LOGIN", "")
           
-          if "Melt-Chan-Feed" in title or "Melt-Chan-Roast" in title:
+          if "Melt-Chan-Feed" in title:
               with open("bot_state.json", "r") as f:
                   state = json.load(f)
-                  
               state["last_interactor"] = user
-              
-              if "Cookie" in title:
-                  state["cookies"] += 1
-              elif "Roast" in title:
-                  state["roasts"] += 1
-                  
+              state["cookies"] += 1
               with open("bot_state.json", "w") as f:
                   json.dump(state, f, indent=2)
           '
 
-      - name: Commit and Push State Update
+      - name: Commit and Push State Update (If Cookie Given)
+        if: contains(github.event.issue.title, 'Melt-Chan-Feed')
         run: |
           git config --global user.name "melt-chan[bot]"
           git config --global user.email "melt-chan@users.noreply.github.com"
           git add bot_state.json
-          git commit -m "Update Melt-Chan state by @${{ github.event.issue.user.login }}" || echo "No changes to commit"
+          git commit -m "Cookie from @${{ github.event.issue.user.login }}" || echo "No changes"
           git push
 
-      - name: Comment and Close Issue
+      - name: Bot Auto-Reply
         uses: actions/github-script@v6
         with:
           script: |
             const title = context.payload.issue.title;
-            let message = `Melt-Chan is confused...`;
+            let message = "";
             
-            if (title.includes('Cookie')) {
-              message = `Om nom nom! 🍪 Thanks for the cookie, @${context.payload.issue.user.login}! My stats are updated on Advik's profile.`;
-            } else if (title.includes('Roast')) {
-              message = `🔥 Ouch! Melt-Chan felt that roast, @${context.payload.issue.user.login}. Advik will hear about this.`;
+            const wildIdeas = [
+              "Create a CI/CD pipeline that intentionally breaks builds if the code isn't aesthetically pleasing.",
+              "Build an IoT device for auto rickshaws that charges passengers based on how many potholes they hit.",
+              "A social network where you can only communicate using HTTP status codes.",
+              "Build a Minecraft mod that visualizes your server's Docker containers as mobs. Kill a mob, kill the container."
+            ];
+            const randomIdea = wildIdeas[Math.floor(Math.random() * wildIdeas.length)];
+            
+            if (title.includes('Feed')) {
+              message = `Om nom nom! 🍪 Thanks for the cookie, @${context.payload.issue.user.login}! Advik owes you one.`;
+            } else if (title.includes('Idea')) {
+              message = `**You want an idea, @${context.payload.issue.user.login}? Here you go:**\n\n> ${randomIdea}\n\nNow go build it. I am closing this issue.`;
             }
             
-            // Post the comment
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });
-            
-            // Close the issue
-            await github.rest.issues.update({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'closed'
-            });
+            if (message !== "") {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+              await github.rest.issues.update({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'closed'
+              });
+            }

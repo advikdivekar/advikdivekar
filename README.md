@@ -1,8 +1,5 @@
 # hey i'm advik
 
-<div align="center">
-  <img src="wanted.gif" alt="Wanted: Advik Divekar" width="100%">
-</div>
 
 <p align="left">
   <img src="https://komarev.com/ghpvc/?style=for-the-badge&username=advikdivekar&label=Profile%20Views&color=ff4b6e&style=flat" alt="advikdivekar profile views" />

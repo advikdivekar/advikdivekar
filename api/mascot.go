@@ -217,7 +217,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 <polygon points="76,36 84,46 92,36" class="bubble-arrow-outline"/>
 <polygon points="77,36 84,45 91,36" class="bubble-arrow"/>
 <text x="90" y="18" class="nametag" text-anchor="middle">Hello! I'm Melt 👋</text>
-<text x="90" y="30" class="nametag" text-anchor="middle">by Advik ✨</text>
 
 <!-- ═══ IDEA BUBBLE ═══ -->
 <rect x="194" y="14" width="596" height="158" rx="12" class="bubble-bg"/>

@@ -6,9 +6,6 @@
 </p>
 
 
-
-currently working on melt
-
 learning about distributed systems, micro-services and computer networking
 
 anyone who comes across my profile help me with melt - my clay game hehe

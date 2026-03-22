@@ -8,10 +8,6 @@
 
 learning about distributed systems, micro-services and computer networking
 
-anyone who comes across my profile help me with melt - my clay game hehe
-
-you and i can work on any project hehe
-
 mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com
 
 not a fun fact - i code in search of purpose.

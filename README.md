@@ -12,6 +12,8 @@ mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gm
 
 not a fun fact - i code in search of purpose.
 
+open to work in agentic ai, machine learning, and mcp projects
+
 ---
 
 <br/>

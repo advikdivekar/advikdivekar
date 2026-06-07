@@ -1,4 +1,4 @@
-# hey i'm advik 
+# hi i'm advik 
 
 
 <p align="left">

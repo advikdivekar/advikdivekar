@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 """
 make_ascii_svg.py
-High-detail colored ASCII SVG generator.
+Converts an image to an extremely detailed, small-character colored ASCII SVG.
 Requires: pip install Pillow numpy
 """
 import sys
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageEnhance
 
-# --- CONFIGURATION ---
-RAMP = " .`:-=+*cs#%@"   # Detailed character ramp
-COLS = 160               # HIGHER resolution for maximum face detail
-CHAR_W = 5.0             # Character width in SVG units
-CHAR_H = 9               # Character height in SVG units
-FONT_SIZE = 9            # Font size
-BG_COLOR = "#0d1117"     # GitHub Dark background
-ROW_DURATION = 0.55      # seconds per row wipe
-ROW_STAGGER = 0.045      # seconds between successive rows starting
-COLOR_QUANTIZATION = 64  # INCREASED to 64 for finer skin tones and shadows
-# ---------------------
+# --- CONFIGURATION FOR MAXIMUM DETAIL ---
+# REMOVED the leading space so bright areas (sky) map to dots instead of empty space
+RAMP = ".'`^:\";Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+COLS = 250                # Massive column count for "minute" details
+CHAR_W = 3.5              # Very narrow characters (small size)
+CHAR_H = 7.0              # Very short characters
+FONT_SIZE = 6             # Tiny font size
+BG_COLOR = "#0d1117"      # GitHub Dark background
+ROW_DURATION = 0.1        # Fast row wipe because there are many rows
+ROW_STAGGER = 0.005       # Very small stagger to keep animation quick
+COLOR_QUANTIZATION = 128  # High color count for flames and sky gradients
+# ----------------------------------------
 
 def escape(s: str) -> str:
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -30,24 +31,28 @@ def image_to_colored_rows(path: str):
         print(f"Error opening image: {e}")
         return []
     
-    # Auto-contrast makes the face detailing pop in ASCII
+    # 1. Enhance contrast to make clouds and muscles pop
     img = ImageOps.autocontrast(img, cutoff=1)
+    img = ImageEnhance.Contrast(img).enhance(1.3)
+    img = ImageEnhance.Sharpness(img).enhance(1.5)
+    # 2. BOOST SATURATION to make the blue sky and orange flames vivid
+    img = ImageEnhance.Color(img).enhance(1.6)
     
     w, h = img.size
-    rows = int(COLS * (h / w) * 0.5)
+    ROWS = int(COLS * (h / w) * 0.5)
     
-    img = img.resize((COLS, rows))
+    # LANCZOS RESAMPLING preserves fine details
+    img = img.resize((COLS, ROWS), Image.Resampling.LANCZOS)
     
-    # Quantize colors to 64 for detailed face shading
+    # Quantize colors to 128 for detailed gradients
     q_img = img.quantize(colors=COLOR_QUANTIZATION, method=Image.Quantize.MEDIANCUT)
     palette = q_img.getpalette()
     
-    # Grayscale mapping for character density
     gray_img = img.convert("L")
     gray_arr = np.array(gray_img, dtype=np.float32) / 255.0
     
     colored_rows = []
-    for r in range(rows):
+    for r in range(ROWS):
         line = []
         for c in range(COLS):
             idx = int((1.0 - gray_arr[r, c]) * (len(RAMP) - 1))
@@ -81,7 +86,7 @@ def build_svg(colored_rows) -> str:
     ]
 
     for r, row_data in enumerate(colored_rows):
-        y = 12 + r * CHAR_H
+        y = 10 + r * CHAR_H
         start = ROW_STAGGER * r
         clip_id = f"clip{r}"
         
@@ -89,7 +94,7 @@ def build_svg(colored_rows) -> str:
         current_color = None
         current_text = ""
         
-        # Grouping same-colored characters keeps file size small
+        # Critical optimization: Group same-colored characters to keep file size low
         for char, color in row_data:
             if color == current_color:
                 current_text += char
@@ -123,7 +128,7 @@ def build_svg(colored_rows) -> str:
             f'begin="{start:.3f}s" dur="{ROW_DURATION}s" fill="freeze" '
             f'calcMode="spline" keySplines="0.25 0.1 0.25 1"/>'
             f'<animate attributeName="opacity" from="0.8" to="0" '
-            f'begin="{start + ROW_DURATION:.3f}s" dur="0.15s" fill="freeze"/>'
+            f'begin="{start + ROW_DURATION:.3f}s" dur="0.1s" fill="freeze"/>'
             f"</rect>"
         )
 
@@ -132,7 +137,7 @@ def build_svg(colored_rows) -> str:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python make_ascii_svg.py <path_to_image>")
+        print("Usage: python make_ascii_svg.py <path_to_image.png>")
         sys.exit(1)
         
     src = sys.argv[1]
@@ -141,7 +146,7 @@ if __name__ == "__main__":
     
     if colored_rows:
         svg = build_svg(colored_rows)
-        output_name = "avi-ascii.svg"
+        output_name = "hero-banner.svg"
         with open(output_name, "w") as f:
             f.write(svg)
         print(f"Success! Wrote {output_name}")

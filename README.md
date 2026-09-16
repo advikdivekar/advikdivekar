@@ -6,7 +6,7 @@
 
 <br/>
 
-learning about distributed systems, micro-services and computer networking
+learning about wetware, computational neuroscience, RLVR, RL
 
 mail me at my personal email (i haven't created my dev mail yet) advikdivekar@gmail.com
 

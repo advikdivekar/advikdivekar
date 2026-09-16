@@ -1,9 +1,10 @@
 # hi i'm advik 
 
 <div align="center">
-  <img src="./avi-ascii.svg" alt="Detailed Colored ASCII Urahara" width="100%" />
+  <img src="./hero-banner.svg" alt="Ace ASCII Hero Banner" width="100%" />
 </div>
 
+<br/>
 
 learning about distributed systems, micro-services and computer networking
 
